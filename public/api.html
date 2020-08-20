@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Dallin's Flashcard</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<!-- development version, includes helpful console warnings -->
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  	<link rel="stylesheet" href="/css/normalize.css">
+  	<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+
+	<div id="app">
+
+		<med-large-ribbon
+			v-bind:parent-ribbon-info="ribbonInfo"
+			v-bind:parent-site-nav-items-action="siteNavItemsAction"
+			v-bind:parent-user-nav-items-action="userNavItemsAction">	
+		</med-large-ribbon>
+
+		<a class="image-wrap mobile-site-ribbon__logo" href="/">
+			<img src="/images/sample-logo.svg">
+		</a>
+		<small-ribbon
+			v-bind:parent-ribbon-info="ribbonInfo"
+			v-bind:parent-site-nav-items-action="siteNavItemsAction"
+			v-bind:parent-user-nav-items-action="userNavItemsAction">	
+		</small-ribbon>
+
+		<authentication
+			v-on:get-token-function="setGetTokenFunction"
+			v-on:token-status-change="tokenStatusChange" ref="auth">
+		</authentication>
+
+
+
+		<h1>API Reference!</h1>
+
+		<div class="apiDocs">
+			<div class="apiEndpoint">
+				<div class="apiEndpoint__route">
+					<span>/api/chat/general</span>
+				</div>
+
+				<div class="apiEndpoint__methods">
+					<div class="apiEndpoint__method">GET</div>
+					<div class="apiEndpoint__method">POST</div>
+					<div class="apiEndpoint__method">DELETE</div>
+					<div class="apiEndpoint__method">UPDATE</div>
+				</div>
+
+				<!-- Request Headers -->
+				<div class="usageOptions">
+					<h3 class="usageOptions__title">Request Headers</h3>
+
+					<div class="usageOptions__short">
+						<div class="usageOptions__option--summary">
+							<div class="usageOptions__optionSummary__required">Optional</div>
+							<div class="usageOptions__optionSummary__name">x-access-token</div>
+							<div class="usageOptions__optionSummary__value">token</div>
+						</div>
+						<div class="usageOptions__option--summary">
+							<div class="usageOptions__optionSummary__required">Optional</div>
+							<div class="usageOptions__optionSummary__label">Content-Type</div>
+							<div class="usageOptions__optionSummary__value">application/x-www-form-urlencoded</div>
+						</div>
+					</div>
+
+					<div class="usageOptions__long">
+						<div class="usageOptions__option">
+							<div class="usageOptions__optionSummary__required">Optional</div>
+							<div class="usageOptions__optionSummary__name">x-access-token</div>
+							<div class="usageOptions__optionSummary__value">token</div>
+						</div>
+						<div class="usageOptions__option">
+							<div class="usageOptions__optionSummary__required">Optional</div>
+							<div class="usageOptions__optionSummary__label">Content-Type</div>
+							<div class="usageOptions__optionSummary__value">application/x-www-form-urlencoded</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Query Parameters -->
+				<div class="usageOptions">
+					<h3 class="usageOptions__title">Query Parameters</h3>
+
+					<ul class="usageOptions__short">
+						<li class="usageOptions__optionSummary"
+							><span class="usageOptions__optionSummary__name">x-access-token</span
+							>:<span class="usageOptions__optionSummary__value">token</span
+							><span class="usageOptions__optionSummary__required">Optional</span></li
+						>
+						<li class="usageOptions__summaryListItem"
+							><span class="usageOptions__optionSummary__label">Content-Type</span
+							>:<span class="usageOptions__optionSummary__value">application/x-www-form-urlencoded</span
+							><span class="usageOptions__optionSummary__required">Optional</span></li
+						>
+					</ul>
+
+					<div class="usageOptions__long">
+						<div class="usageOptions__option">
+							<div
+								><span class="usageOptions__option__label">x-access-token</span
+								>:<span class="usageOptions__option__value">token</span
+								>:<span class="usageOptions__option__required">token</span
+								></div
+							>
+							<div class="usageOptions__option__description">
+							</div>
+						</div>
+
+					</div>
+				</div>
+
+				<!-- Request Body -->
+				<div class="usageOptions">
+					<h3 class="usageOptions__title">Request Body</h3>
+
+					<ul class="usageOptions__short">
+						<li class="usageOptions__optionSummary"
+							><span class="usageOptions__optionSummary__name">x-access-token</span
+							>:<span class="usageOptions__optionSummary__value">token</span
+							><span class="usageOptions__optionSummary__required">Optional</span></li
+						>
+						<li class="usageOptions__summaryListItem"
+							><span class="usageOptions__optionSummary__label">Content-Type</span
+							>:<span class="usageOptions__optionSummary__value">application/x-www-form-urlencoded</span
+							><span class="usageOptions__optionSummary__required">Optional</span></li
+						>
+					</ul>
+
+					<div class="usageOptions__long">
+						<div class="usageOptions__option">
+							<div
+								><span class="usageOptions__option__label">x-access-token</span
+								>:<span class="usageOptions__option__value">token</span
+								>:<span class="usageOptions__option__required">token</span
+								></div
+							>
+							<div class="usageOptions__option__description">
+							</div>
+						</div>
+
+					</div>
+				</div>
+
+				<!-- Response Body -->
+				<div class="usageOptions">
+					<h3 class="usageOptions__title">Response Body</h3>
+
+					<ul class="usageOptions__short">
+						<li class="usageOptions__optionSummary"
+							><span class="usageOptions__optionSummary__name">x-access-token</span
+							>:<span class="usageOptions__optionSummary__value">token</span
+							><span class="usageOptions__optionSummary__required">Optional</span></li
+						>
+						<li class="usageOptions__summaryListItem"
+							><span class="usageOptions__optionSummary__label">Content-Type</span
+							>:<span class="usageOptions__optionSummary__value">application/x-www-form-urlencoded</span
+							><span class="usageOptions__optionSummary__required">Optional</span></li
+						>
+					</ul>
+
+					<div class="usageOptions__long">
+						<div class="usageOptions__option">
+							<div
+								><span class="usageOptions__option__label">x-access-token</span
+								>:<span class="usageOptions__option__value">token</span
+								>:<span class="usageOptions__option__required">token</span
+								></div
+							>
+							<div class="usageOptions__option__description">
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+
+<script src="/js/Login.js"></script>
+<script src="/js/Register.js"></script>
+<script src="/js/app.js"></script>
+<script>
+// Add class to distinguish between touch/non-touch experiences.
+window.addEventListener("load", function() {
+    if (!("ontouchstart" in document.documentElement)) {
+    	document.documentElement.classList.add("no-touch");
+    }
+});
+</script>
+</body>
+</html>
