@@ -3,3 +3,5 @@ npm-debug.log
 variables.env
 package-lock.json
 test/*.log
+config.js
+configIpPort.js
