@@ -5,3 +5,4 @@ package-lock.json
 test/*.log
 config.js
 configIpPort.js
+sslcert/*
