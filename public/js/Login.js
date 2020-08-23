@@ -45,7 +45,7 @@ var Login = {
 
 				}
 			};
-			xhttp.open("POST", "/api/auth/login", true);
+			xhttp.open("POST", "/api/v1/site/auth/login", true);
 			xhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 			xhttp.send(body);
 		},

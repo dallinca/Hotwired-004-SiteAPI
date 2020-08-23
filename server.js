@@ -10,7 +10,7 @@ if (configIpPort.https == false) {
 
 	var httpServer = http.createServer(app);
 
-	httpServer.listen(3000, ipv4, function() {
+	httpServer.listen(port, ipv4, function() {
 	  console.log('Express server listening on port ' + port);
 	});
 
@@ -24,7 +24,7 @@ if (configIpPort.https == false) {
 
 	var httpsServer = https.createServer(credentials, app);
 
-	httpsServer.listen(3000, ipv4, function() {
+	httpsServer.listen(port, ipv4, function() {
 	  console.log('Express server listening on port ' + port);
 	});
 

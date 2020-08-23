@@ -1,4 +1,5 @@
 // AuthController.js
+var pathToRootFolder = '../../../../';
 
 // Prep router
 var express = require('express');
@@ -12,12 +13,14 @@ var VerifyToken = require('./VerifyToken');
 var LoadUserInfo = require('./LoadUserInfo');
 
 // Prep models
-var User = require('../mongoose_models/User');
+var User = require(pathToRootFolder + 'mongoose_models/User');
 
 // Prep Additional Libraries
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcryptjs');
-var config = require('../config');
+
+// Prep local configurations
+var config = require(pathToRootFolder + 'config');
 
 // ==============================
 // ===== Helping Functions

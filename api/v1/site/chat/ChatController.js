@@ -1,4 +1,5 @@
-// AuthController.js
+// ChatController.js
+var pathToRootFolder = '../../../../';
 
 // Prep router
 var express = require('express');
@@ -8,11 +9,11 @@ router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 
 // Prep Auth
-var VerifyToken = require('../../auth/VerifyToken');
-var LoadUserInfo = require('../../auth/LoadUserInfo');
+var VerifyToken = require(pathToRootFolder + 'api/v1/site/auth/VerifyToken');
+var LoadUserInfo = require(pathToRootFolder + 'api/v1/site/auth/LoadUserInfo');
 
 // Prep models
-var Chat = require('../../mongoose_models/Chat');
+var Chat = require(pathToRootFolder + 'mongoose_models/Chat');
 
 // Prep Additional Libraries
 // ..

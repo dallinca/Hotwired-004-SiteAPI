@@ -77,7 +77,7 @@ Vue.component('authentication', {
 
 				}
 			};
-			xhttp.open("GET", "/api/auth/checkToken", true);
+			xhttp.open("GET", "/api/v1/site/auth/checkToken", true);
 			xhttp.setRequestHeader('x-access-token', token);
 			xhttp.send();
 		}
@@ -338,7 +338,7 @@ Vue.component('da-profile', {
 					console.log(responseObj);
 				}
 			};
-			xhttp.open("GET", "/api/auth/me", true);
+			xhttp.open("GET", "/api/v1/site/auth/me", true);
 			xhttp.setRequestHeader('x-access-token', token);
 			xhttp.send();
 		}
@@ -425,7 +425,7 @@ Vue.component('da-chat', {
 					}
 				}
 			};
-			xhttp.open("GET", "/api/chat/general", true);
+			xhttp.open("GET", "/api/v1/site/chat/general", true);
 			xhttp.send();
 		},
 		sendNewMessage: function(target, tapGroup) {
@@ -459,7 +459,7 @@ Vue.component('da-chat', {
 					}
 				}
 			};
-			xhttp.open("POST", "/api/chat/general", true);
+			xhttp.open("POST", "/api/v1/site/chat/general", true);
 			xhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 			xhttp.setRequestHeader('x-access-token', token);
 			xhttp.send(body);

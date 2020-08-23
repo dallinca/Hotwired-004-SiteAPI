@@ -46,7 +46,7 @@ var Register = {
 
 				}
 			};
-			xhttp.open("POST", "/api/auth/register", true);
+			xhttp.open("POST", "/api/v1/site/auth/register", true);
 			xhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 			xhttp.send(body);
 		},
