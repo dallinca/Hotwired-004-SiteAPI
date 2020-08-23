@@ -2,7 +2,7 @@
 var pathToRootFolder = '../../../../';
 
 // Prep modelsi
-var User = require(pathToRootFolder + 'mongoose_models/User');
+var User = require(pathToRootFolder + 'mongoose_models/v1/site/User');
 
 function loadUserInfo(req, res, next) {
   // Check token verification

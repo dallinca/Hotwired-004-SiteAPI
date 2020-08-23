@@ -13,7 +13,7 @@ var VerifyToken = require('./VerifyToken');
 var LoadUserInfo = require('./LoadUserInfo');
 
 // Prep models
-var User = require(pathToRootFolder + 'mongoose_models/User');
+var User = require(pathToRootFolder + 'mongoose_models/v1/site/User');
 
 // Prep Additional Libraries
 var jwt = require('jsonwebtoken');

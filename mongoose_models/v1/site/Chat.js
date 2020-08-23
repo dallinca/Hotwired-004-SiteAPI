@@ -3,6 +3,6 @@ var ChatSchema = new mongoose.Schema({
 	name: String,
     messages: [{ body: String, date: Date, name: String }]
 });
-mongoose.model('Chat', ChatSchema);
+mongoose.model('Site_Chat', ChatSchema);
 
-module.exports = mongoose.model('Chat');
+module.exports = mongoose.model('Site_Chat');

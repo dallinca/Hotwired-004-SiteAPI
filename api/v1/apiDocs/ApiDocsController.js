@@ -13,7 +13,7 @@ var VerifyToken = require(pathToRootFolder + 'api/v1/site/auth/VerifyToken');
 var LoadUserInfo = require(pathToRootFolder + 'api/v1/site/auth/LoadUserInfo');
 
 // Prep models
-var ApiDoc = require(pathToRootFolder + 'mongoose_models/ApiDoc.js');
+var ApiDoc = require(pathToRootFolder + 'mongoose_models/v1/ApiDoc.js');
 
 // Prep Additional Libraries
 // ..

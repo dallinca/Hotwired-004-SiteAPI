@@ -4,9 +4,9 @@ var UserSchema = new mongoose.Schema({
   email: { type: String, lowercase: true },
   password: String
 });
-mongoose.model('User', UserSchema);
+mongoose.model('Site_User', UserSchema);
 
-module.exports = mongoose.model('User');
+module.exports = mongoose.model('Site_User');
 
 /*
 TODO
