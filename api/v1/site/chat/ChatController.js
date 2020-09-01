@@ -18,6 +18,8 @@ var Chat = require(pathToRootFolder + 'mongoose_models/v1/site/Chat');
 // Prep Additional Libraries
 // ..
 
+// Settings
+var GENERAL_CHAT_PERSISTANCE = 5; // minutes
 
 // ==============================
 // ===== Helping Functions
@@ -35,7 +37,7 @@ function initGeneralChat(req, res, next) {
       var generalChat = new Chat({ name: 'general',  });
       generalChat.save(function(err) {
         if (err) return res.status(500).send({ auth: true, message: 'Error on the server.' });
-          next();
+          next()
       });
     } else {
       next()
@@ -44,32 +46,7 @@ function initGeneralChat(req, res, next) {
 
 }
 
-function sliceMessagesSinceDate(messages, dateObj) {
-
-    // Find first new message
-    var newMessageIndex = -1;
-    for (var i = 0; i < messages.length; i++) {
-      if (messages[i].date > dateObj) {
-        newMessageIndex = i;
-        break;
-      }
-    }
-
-    // Slice out unneeded messages from array
-    var messagesToReturn = [];
-    if (newMessageIndex > -1) {
-      messagesToReturn = messages.slice(newMessageIndex);
-    }
-
-    return messagesToReturn;
-}
-
-// ==============================
-// ===== Routes
-// ==============================
-
-router.get('/general', initGeneralChat, function(req, res, next) {
-
+function getGeneralChat(req, res, next) {
   var timeString = req.query['time'];
   var timeObj = Date.parse(timeString);
   var timeValid = true;
@@ -83,15 +60,64 @@ router.get('/general', initGeneralChat, function(req, res, next) {
     if (err) return res.status(500).send({ auth: true, message: 'Error on the server.' });
     if (!results) return res.status(500).send({ auth: true, message: 'Error on the server.' });
 
-    var messagesToReturn = results.messages;
+    res.locals.generalMessages = results.messages;
+    res.locals.clippedMessages = sliceMessagesSinceMinutes(results.messages, GENERAL_CHAT_PERSISTANCE);
+    res.locals.returnMessages = res.locals.clippedMessages;
+
     if (timeValid) {
-      messagesToReturn = sliceMessagesSinceDate(results.messages, timeObj);
+      res.locals.returnMessages = sliceMessagesSinceDate(results.messages, timeObj);
     }
 
-    //return res.status(200).send({ auth: true, message: 'success', chat: results.messages });
-    return res.status(200).send({ auth: true, message: 'success', chat: messagesToReturn });
+    next()
   });
+}
 
+function clipGeneralChat(req, res, next) {
+
+  // Add the message
+  Chat.updateOne({ name: 'general' }, { $set: { messages: res.locals.clippedMessages }}, function(err, results) {
+    if (err) return res.status(500).send({ auth: true, message: 'Error on the server.' });
+    if (!results) return res.status(500).send({ auth: true, message: 'Error on the server.' });
+
+    next()
+  });
+}
+
+function sliceMessagesSinceDate(messages, dateObj) {
+
+  // Find first new message
+  var newMessageIndex = -1;
+  for (var i = 0; i < messages.length; i++) {
+    if (messages[i].date > dateObj) {
+      newMessageIndex = i;
+      break;
+    }
+  }
+
+  // Slice out unneeded messages from array
+  var messagesToReturn = [];
+  if (newMessageIndex > -1) {
+    messagesToReturn = messages.slice(newMessageIndex);
+  }
+
+  return messagesToReturn;
+}
+
+function sliceMessagesSinceMinutes(messages, minutes) {
+
+  var totalMilliseconds = minutes * 60 * 1000;
+  var currentDate = new Date();
+  var pastDate = new Date(currentDate.getTime() - totalMilliseconds);
+
+  return sliceMessagesSinceDate(messages, pastDate);
+}
+
+// ==============================
+// ===== Routes
+// ==============================
+
+router.get('/general', [initGeneralChat, getGeneralChat, clipGeneralChat], function(req, res, next) {
+  return res.status(200).send({ auth: true, message: 'success', chat: res.locals.returnMessages });
 });
 
 router.post('/general', [VerifyToken, LoadUserInfo], function(req, res, next) {
