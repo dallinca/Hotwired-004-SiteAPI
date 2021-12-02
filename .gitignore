@@ -9,6 +9,8 @@ config.js
 configIpPort.js
 sslcert/*
 nohup.out
+public
+public_old
 
 ######## NODE gitignore
 

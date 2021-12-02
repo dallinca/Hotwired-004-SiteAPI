@@ -23,7 +23,7 @@ app.use('/api/v1/site/auth', AuthController);
 var ChatContoller = require('./api/v1/site/chat/ChatController');
 app.use('/api/v1/site/chat', ChatContoller);
 
-// Chat
+// Api
 var ApiDocsContoller = require('./api/v1/apiDocs/ApiDocsController');
 app.use('/api/v1/apiDocs', ApiDocsContoller);
 
@@ -35,14 +35,10 @@ app.use('/api/v1/apiDocs', ApiDocsContoller);
 
 app.use(express.static(PUBLIC_DIR));
 
-/*
-TODO - Specific path for favicon
-*/
-
 // Home
-app.get('', function(req, res) { res.sendFile(ABS_PUBLIC_DIR + '/home.html'); });
+/*app.get('', function(req, res) { res.sendFile(ABS_PUBLIC_DIR + '/home.html'); });
 app.get('/', function(req, res) { res.sendFile(ABS_PUBLIC_DIR + '/home.html'); });
-app.get('/home', function(req, res) { res.sendFile(ABS_PUBLIC_DIR + '/home.html'); });
+app.get('/home', function(req, res) { res.sendFile(ABS_PUBLIC_DIR + '/home.html'); });*/
 
 // Public Pages
 /* final catch-all route to index.html defined last */
@@ -51,7 +47,7 @@ app.get('/*', function(req, res) {
 	if (fs.existsSync(path)) {
   		res.sendFile(path);
 	} else {
-  		res.sendFile(ABS_PUBLIC_DIR + '/404.html');
+  		res.sendFile(ABS_PUBLIC_DIR + '/index.html');
 	}
 });
 

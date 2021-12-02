@@ -1,17 +1,30 @@
+const { exit } = require('process');
 var app = require('./app');
 var configIpPort = require('./configIpPort');
 var port = process.env.PORT || configIpPort.port;
 
-var ipv4 = configIpPort.ipv4;
+if (!configIpPort.ipv4) {
+	console.log('No ipv4 address specified in ./configIpPort ');
+	exit()
+}
+
+let ipv4Array = [];
+if (typeof configIpPort.ipv4 === 'string') ipv4Array.push(configIpPort.ipv4)
+else if (Array.isArray(configIpPort.ipv4)) ipv4Array = configIpPort.ipv4
+
+if (!ipv4Array.length) {
+	console.log('No ipv4 address specified in ./configIpPort ');
+	exit()
+}
 
 if (configIpPort.https == false) {
 
 	var http = require('http');
 
-	var httpServer = http.createServer(app);
-
-	httpServer.listen(port, ipv4, function() {
-	  console.log('Express server listening on port ' + port);
+	ipv4Array.forEach(function(ipv4, index) {
+		http.createServer(app).listen(port, ipv4, function() {
+			console.log('Express server listening at ' + ipv4 + ':' + port);
+		});
 	});
 
 } else {
@@ -22,10 +35,10 @@ if (configIpPort.https == false) {
 	var certificate = fs.readFileSync('sslcert/server.crt', 'utf8');
 	var credentials = {key: privateKey, cert: certificate};
 
-	var httpsServer = https.createServer(credentials, app);
-
-	httpsServer.listen(port, ipv4, function() {
-	  console.log('Express server listening on port ' + port);
+	configIpPort.ipv4Array.forEach(function(ipv4, index) {
+		https.createServer(credentials, app).listen(port, ipv4, function() {
+			console.log('Express server listening on port ' + port);
+		});
 	});
 
 }
