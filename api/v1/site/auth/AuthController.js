@@ -14,6 +14,7 @@ var LoadUserInfo = require('./LoadUserInfo');
 
 // Prep models
 var User = require(pathToRootFolder + 'mongoose_models/v1/site/User');
+var Visitor = require(pathToRootFolder + 'mongoose_models/v1/site/Visitor');
 
 // Prep Additional Libraries
 var jwt = require('jsonwebtoken');
@@ -22,14 +23,35 @@ var bcrypt = require('bcryptjs');
 // Prep local configurations
 var config = require(pathToRootFolder + 'config');
 
+// Prep email module
+const nodemailer = require("nodemailer");
+let transporter = nodemailer.createTransport({ // create reusable transporter object using the default SMTP transport
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true, // true for 465, false for other ports
+  auth: {
+    type: 'OAuth2',
+    //user: config.emailAddress,
+    clientID: config.emailClientID,
+    clientSecret: config.emailClientSecret
+  },
+});
+
 // ==============================
 // ===== Helping Functions
 // ==============================
+
+function verifySendRegistrationTokenInfoPresent(req, res, next) {
+  if (!req.body.email) return res.status(404).send({ auth: false, token: null, message: 'Send Registration Token Body must contain an email field.' });
+
+  next();
+}
 
 function verifyRegisterInfoPresent(req, res, next) {
   if (!req.body.email) return res.status(404).send({ auth: false, token: null, message: 'Register Body must contain an email field.' });
   if (!req.body.password) return res.status(404).send({ auth: false, token: null, message: 'Register Body must contain a password field.' });
   if (!req.body.name) return res.status(404).send({ auth: false, token: null, message: 'Register Body must contain a name field.' });
+  if (!req.body.emailVerificationToken) return res.status(404).send({ auth: false, token: null, message: 'Register Body must contain an email verification token.' });
 
   next();
 }
@@ -52,9 +74,49 @@ function verifyUniqueName(req, res, next) {
   });
 }
 
+async function sendTestEmail(registrationToken, visitorEmail){
+  // send mail with defined transport object
+  let info = await transporter.sendMail({
+    from: 'hotwiredgaming@dabrhousegames.com', // sender address
+    to: visitorEmail, // list of receivers
+    subject: "Hello ✔", // Subject line
+    text: "First Test Email. Code is " + registrationToken, // plain text body
+    html: "<p>First Test Email. Code is <b>" + registrationToken + "</b></p>", // html body
+  });
+
+  console.log("Message sent: %s", info.messageId);
+  // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+}
+
 // ==============================
 // ===== Routes
 // ==============================
+
+router.post('/sendRegistrationToken', [verifySendRegistrationTokenInfoPresent, verifyUniqueEmail], function(req, res) {
+  
+  // Generate token
+  var registrationToken = Math.floor(100000 + Math.random() * 900000);
+
+  // Ensure an entry exists for the email along with a registrationToken
+  Visitor.findOneAndUpdate({ email: req.body.email }, { 'registrationToken': registrationToken }, { useFindAndModify: false }, function(err, visitor){
+    if (err) return res.status(500).send({ auth: false, token: null, message: 'Error on the server. Unable to send Registration Token.' });
+    if (!visitor) {
+      Visitor.create({
+        email : req.body.email,
+        'registrationToken' : registrationToken
+      }, function(err, visitor){
+        if (err || !visitor) return res.status(500).send({ auth: false, token: null, message: 'Error on the server. Unable to send Registration Token.' });
+      });
+    }
+  });
+
+  // Send the registrationToken
+  console.log('Ready to send Token via email, but not yet implemented');
+  sendTestEmail(registrationToken, req.body.email);
+
+  // Success
+  res.status(200).send({ auth: false, token: null, message: 'Registration Token sent to the email specified' });
+});
 
 router.post('/register', [verifyRegisterInfoPresent, verifyUniqueEmail, verifyUniqueName], function(req, res) {
   
