@@ -25,6 +25,16 @@ var config = require(pathToRootFolder + 'config');
 
 // Prep email module
 const nodemailer = require("nodemailer");
+const {google} = require("googleapis");
+const oauth2Client = new google.auth.OAuth2(
+  config.emailClientID,
+  config.emailClientSecret,
+  "https://developers.google.com/oauthplayground" // Redirect URL
+);
+oauth2Client.setCredentials({ refresh_token: config.refreshToken });
+const newAccessToken = oauth2Client.getAccessToken();
+console.log("NEW ACCESS TOKEN: " + newAccessToken);
+
 let transporter = nodemailer.createTransport({ // create reusable transporter object using the default SMTP transport
   host: "smtp.gmail.com",
   port: 465,
@@ -33,7 +43,9 @@ let transporter = nodemailer.createTransport({ // create reusable transporter ob
     type: 'OAuth2',
     //user: config.emailAddress,
     clientID: config.emailClientID,
-    clientSecret: config.emailClientSecret
+    clientSecret: config.emailClientSecret,
+    refreshToken: config.refreshToken,
+    accessToken: newAccessToken
   },
 });
 
@@ -77,7 +89,7 @@ function verifyUniqueName(req, res, next) {
 async function sendTestEmail(registrationToken, visitorEmail){
   // send mail with defined transport object
   let info = await transporter.sendMail({
-    from: 'hotwiredgaming@dabrhousegames.com', // sender address
+    from: 'dabr@dabrhousegames.com', // sender address
     to: visitorEmail, // list of receivers
     subject: "Hello ✔", // Subject line
     text: "First Test Email. Code is " + registrationToken, // plain text body
