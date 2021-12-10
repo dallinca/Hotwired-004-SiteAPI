@@ -11,6 +11,7 @@ sslcert/*
 nohup.out
 public
 public_old
+gitignored
 
 ######## NODE gitignore
 
