@@ -25,27 +25,16 @@ var config = require(pathToRootFolder + 'config');
 
 // Prep email module
 const nodemailer = require("nodemailer");
-const {google} = require("googleapis");
-const oauth2Client = new google.auth.OAuth2(
-  config.emailClientID,
-  config.emailClientSecret,
-  "https://developers.google.com/oauthplayground" // Redirect URL
-);
-oauth2Client.setCredentials({ refresh_token: config.refreshToken });
-const newAccessToken = oauth2Client.getAccessToken();
-console.log("NEW ACCESS TOKEN: " + newAccessToken);
-
 let transporter = nodemailer.createTransport({ // create reusable transporter object using the default SMTP transport
   host: "smtp.gmail.com",
   port: 465,
   secure: true, // true for 465, false for other ports
   auth: {
     type: 'OAuth2',
-    //user: config.emailAddress,
-    clientID: config.emailClientID,
-    clientSecret: config.emailClientSecret,
-    refreshToken: config.refreshToken,
-    accessToken: newAccessToken
+    user: config.email.from,
+    serviceClient: config.email.serviceClient,
+    privateKey: config.email.privateKey,
+    scope: config.email.scope
   },
 });
 
@@ -86,18 +75,11 @@ function verifyUniqueName(req, res, next) {
   });
 }
 
-async function sendTestEmail(registrationToken, visitorEmail){
-  // send mail with defined transport object
-  let info = await transporter.sendMail({
-    from: 'dabr@dabrhousegames.com', // sender address
-    to: visitorEmail, // list of receivers
-    subject: "Hello ✔", // Subject line
-    text: "First Test Email. Code is " + registrationToken, // plain text body
-    html: "<p>First Test Email. Code is <b>" + registrationToken + "</b></p>", // html body
-  });
+async function sendEmail(emailData){
+  let info = await transporter.sendMail(emailData);
 
   console.log("Message sent: %s", info.messageId);
-  // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+  return;
 }
 
 // ==============================
@@ -105,29 +87,48 @@ async function sendTestEmail(registrationToken, visitorEmail){
 // ==============================
 
 router.post('/sendRegistrationToken', [verifySendRegistrationTokenInfoPresent, verifyUniqueEmail], function(req, res) {
-  
   // Generate token
+  let NOW = Date.now();
   var registrationToken = Math.floor(100000 + Math.random() * 900000);
+  var tokenExpirationTime = NOW + (config.registration.tokenValidTimeSeconds * 1000);
+  var emailData = {
+    from: config.email.from,
+    to: req.body.email.toString(),
+    subject: 'Hotwired Gaming Registration Code',
+    text: 'Code is ' + registrationToken,
+    html: 'Code is <b>' + registrationToken + '</b></p>'
+  };
 
-  // Ensure an entry exists for the email along with a registrationToken
-  Visitor.findOneAndUpdate({ email: req.body.email }, { 'registrationToken': registrationToken }, { useFindAndModify: false }, function(err, visitor){
+  // Find the entry if it exists
+  Visitor.findOne({ email: req.body.email }, function(err, visitor) {
     if (err) return res.status(500).send({ auth: false, token: null, message: 'Error on the server. Unable to send Registration Token.' });
-    if (!visitor) {
+    if (visitor && visitor.tokenExpirationTime > NOW) {
+      // Need to wait for token to expire before sending a new one
+      return res.status(200).send({ auth: false, token: null, message: 'Registration Token was already sent to this address recently. Please check the email messages thoroughly, or wait a few minutes before trying again.' });
+    } else if (visitor && visitor.tokenExpirationTime <= NOW) {
+      // Create a new token for an OLD visitor
+      Visitor.findOneAndUpdate({ email: req.body.email }, { 'registrationToken': registrationToken, 'tokenExpirationTime': tokenExpirationTime }, { useFindAndModify: false }, function(err, visitor){
+        if (err || !visitor) return res.status(500).send({ auth: false, token: null, message: 'Error on the server. Unable to send Registration Token.' });
+        else {
+          sendEmail(emailData);
+          return res.status(200).send({ auth: false, token: null, message: 'Registration Token sent to the email specified' });
+        }
+      });
+    } else {
+      // Create a new token for a NEW visitor
       Visitor.create({
         email : req.body.email,
-        'registrationToken' : registrationToken
+        'registrationToken' : registrationToken,
+        'tokenExpirationTime': tokenExpirationTime
       }, function(err, visitor){
         if (err || !visitor) return res.status(500).send({ auth: false, token: null, message: 'Error on the server. Unable to send Registration Token.' });
+        else {
+          sendEmail(emailData);
+          return res.status(200).send({ auth: false, token: null, message: 'Registration Token sent to the email specified' });
+        }
       });
     }
-  });
-
-  // Send the registrationToken
-  console.log('Ready to send Token via email, but not yet implemented');
-  sendTestEmail(registrationToken, req.body.email);
-
-  // Success
-  res.status(200).send({ auth: false, token: null, message: 'Registration Token sent to the email specified' });
+  });  
 });
 
 router.post('/register', [verifyRegisterInfoPresent, verifyUniqueEmail, verifyUniqueName], function(req, res) {

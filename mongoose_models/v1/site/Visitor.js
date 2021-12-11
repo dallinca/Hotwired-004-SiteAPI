@@ -1,7 +1,8 @@
 var mongoose = require('mongoose');  
 var VisitorSchema = new mongoose.Schema({
   email: { type: String, lowercase: true },
-  registrationToken: String
+  registrationToken: String,
+  tokenExpirationTime: Number
 });
 mongoose.model('Site_Visitor', VisitorSchema);
 
