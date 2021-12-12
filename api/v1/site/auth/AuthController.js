@@ -42,7 +42,7 @@ let transporter = nodemailer.createTransport({ // create reusable transporter ob
 // ===== Helping Functions
 // ==============================
 
-function verifySendRegistrationTokenInfoPresent(req, res, next) {
+function verifyEmailPresent(req, res, next) {
   if (!req.body.email) return res.status(404).send({ auth: false, token: null, message: 'Send Registration Token Body must contain an email field.' });
 
   next();
@@ -86,45 +86,45 @@ async function sendEmail(emailData){
 // ===== Routes
 // ==============================
 
-router.post('/sendRegistrationToken', [verifySendRegistrationTokenInfoPresent, verifyUniqueEmail], function(req, res) {
-  // Generate token
+router.post('/sendEmailVerificationCode', [verifyEmailPresent, verifyUniqueEmail], function(req, res) {
+  // Generate code
   let NOW = Date.now();
-  var registrationToken = Math.floor(100000 + Math.random() * 900000);
-  var tokenExpirationTime = NOW + (config.registration.tokenValidTimeSeconds * 1000);
+  var emailVerificationCode = Math.floor(100000 + Math.random() * 900000);
+  var codeExpirationTime = NOW + (config.registration.codeValidTimeSeconds * 1000);
   var emailData = {
     from: config.email.from,
     to: req.body.email.toString(),
-    subject: 'Hotwired Gaming Registration Code',
-    text: 'Code is ' + registrationToken,
-    html: 'Code is <b>' + registrationToken + '</b></p>'
+    subject: 'Hotwired Gaming email verification code',
+    text: 'Code is ' + emailVerificationCode,
+    html: 'Code is <b>' + emailVerificationCode + '</b></p>'
   };
 
   // Find the entry if it exists
   Visitor.findOne({ email: req.body.email }, function(err, visitor) {
-    if (err) return res.status(500).send({ auth: false, token: null, message: 'Error on the server. Unable to send Registration Token.' });
-    if (visitor && visitor.tokenExpirationTime > NOW) {
-      // Need to wait for token to expire before sending a new one
-      return res.status(200).send({ auth: false, token: null, message: 'Registration Token was already sent to this address recently. Please check the email messages thoroughly, or wait a few minutes before trying again.' });
-    } else if (visitor && visitor.tokenExpirationTime <= NOW) {
-      // Create a new token for an OLD visitor
-      Visitor.findOneAndUpdate({ email: req.body.email }, { 'registrationToken': registrationToken, 'tokenExpirationTime': tokenExpirationTime }, { useFindAndModify: false }, function(err, visitor){
-        if (err || !visitor) return res.status(500).send({ auth: false, token: null, message: 'Error on the server. Unable to send Registration Token.' });
+    if (err) return res.status(500).send({ auth: false, token: null, message: 'Error on the server. Unable to send Email Verification Code.' });
+    if (visitor && visitor.codeExpirationTime > NOW) {
+      // Need to wait for code to expire before sending a new one
+      return res.status(200).send({ auth: false, token: null, message: 'Email Verification Code was already sent to this address recently. Please check the email messages thoroughly, or wait a few minutes before trying again.' });
+    } else if (visitor && visitor.codeExpirationTime <= NOW) {
+      // Create a new code for an OLD visitor
+      Visitor.findOneAndUpdate({ email: req.body.email }, { 'emailVerificationCode': emailVerificationCode, 'codeExpirationTime': codeExpirationTime }, { useFindAndModify: false }, function(err, visitor){
+        if (err || !visitor) return res.status(500).send({ auth: false, token: null, message: 'Error on the server. Unable to send Email Verification Code.' });
         else {
           sendEmail(emailData);
-          return res.status(200).send({ auth: false, token: null, message: 'Registration Token sent to the email specified' });
+          return res.status(200).send({ auth: false, token: null, message: 'Email Verification Code sent to the email specified' });
         }
       });
     } else {
-      // Create a new token for a NEW visitor
+      // Create a new code for a NEW visitor
       Visitor.create({
         email : req.body.email,
-        'registrationToken' : registrationToken,
-        'tokenExpirationTime': tokenExpirationTime
+        'emailVerificationCode' : emailVerificationCode,
+        'codeExpirationTime': codeExpirationTime
       }, function(err, visitor){
-        if (err || !visitor) return res.status(500).send({ auth: false, token: null, message: 'Error on the server. Unable to send Registration Token.' });
+        if (err || !visitor) return res.status(500).send({ auth: false, token: null, message: 'Error on the server. Unable to send Email Verification Code.' });
         else {
           sendEmail(emailData);
-          return res.status(200).send({ auth: false, token: null, message: 'Registration Token sent to the email specified' });
+          return res.status(200).send({ auth: false, token: null, message: 'Email Verification Code sent to the email specified' });
         }
       });
     }
