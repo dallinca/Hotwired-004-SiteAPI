@@ -3,6 +3,8 @@ module.exports = {
     ERROR_Email_NotProvided: 'ERROR_Email_NotProvided',
     ERROR_EmailVerificationCode_AlreadySent: 'ERROR_EmailVerificationCode_AlreadySent',
     ERROR_EmailVerificationCode_NotProvided: 'ERROR_EmailVerificationCode_NotProvided',
+    ERROR_EmailVerificationCode_Invalid: 'ERROR_EmailVerificationCode_Invalid',
+    ERROR_EmailVerificationCode_Expired: 'ERROR_EmailVerificationCode_Expired',
     ERROR_Login_InvalidCredentials: 'ERROR_Login_InvalidCredentials',
     ERROR_Name_AlreadyUsed: 'ERROR_Name_AlreadyUsed',
     ERROR_Name_NotProvided: 'ERROR_Name_NotProvided',

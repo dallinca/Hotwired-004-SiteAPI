@@ -8,6 +8,8 @@ const {
   ERROR_Email_NotProvided,
   ERROR_EmailVerificationCode_AlreadySent,
   ERROR_EmailVerificationCode_NotProvided,
+  ERROR_EmailVerificationCode_Invalid,
+  ERROR_EmailVerificationCode_Expired,
   ERROR_Login_InvalidCredentials,
   ERROR_Name_AlreadyUsed,
   ERROR_Name_NotProvided,
@@ -72,7 +74,7 @@ function verifyRegisterInfoPresent(req, res, next) {
   if (!req.body.email) return res.status(404).send({ auth: false, token: null, message: translations(ERROR_Email_NotProvided, res.locals.language) });
   if (!req.body.password) return res.status(404).send({ auth: false, token: null, message: translations(ERROR_Password_NotProvided, res.locals.language) });
   if (!req.body.name) return res.status(404).send({ auth: false, token: null, message: translations(ERROR_Name_NotProvided, res.locals.language) });
-  if (!req.body.emailVerificationToken) return res.status(404).send({ auth: false, token: null, message: translations(ERROR_EmailVerificationCode_NotProvided, res.locals.language) });
+  if (!req.body.emailVerificationCode) return res.status(404).send({ auth: false, token: null, message: translations(ERROR_EmailVerificationCode_NotProvided, res.locals.language) });
 
   next();
 }
@@ -90,6 +92,16 @@ function verifyUniqueName(req, res, next) {
   User.findOne({ name: req.body.name }, function(err, user) {
     if (err) return res.status(500).send({ auth: false, token: null, message: translations(ERROR_Server_Generic, res.locals.language) });
     if (user) return res.status(404).send({ auth: false, token: null, message: translations(ERROR_Name_AlreadyUsed, res.locals.language) });
+
+    next();
+  });
+}
+
+function verifyVisitorEmailCode(req, res, next) {
+  Visitor.findOne({ email: req.body.email }, function(err, visitor) {
+    if (err || !visitor) return res.status(500).send({ auth: false, token: null, message: translations(ERROR_Server_Generic, res.locals.language) });
+    if (visitor.codeExpirationTime < Date.now()) return res.status(404).send({ auth: false, token: null, message: translations(ERROR_EmailVerificationCode_Expired, res.locals.language) });
+    if (visitor.emailVerificationCode != req.body.emailVerificationCode) return res.status(404).send({ auth: false, token: null, message: translations(ERROR_EmailVerificationCode_Invalid, res.locals.language) });
 
     next();
   });
@@ -151,7 +163,7 @@ router.post('/sendEmailVerificationCode', [verifyEmailPresent, verifyUniqueEmail
   });  
 });
 
-router.post('/register', [verifyRegisterInfoPresent, verifyUniqueEmail, verifyUniqueName], function(req, res) {
+router.post('/register', [verifyRegisterInfoPresent, verifyUniqueEmail, verifyUniqueName, verifyVisitorEmailCode], function(req, res) {
   
   var hashedPassword = bcrypt.hashSync(req.body.password, 8);
   
