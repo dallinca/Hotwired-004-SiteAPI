@@ -4,16 +4,14 @@ var pathToRootFolder = '../../../../';
 // Translations
 var translations = require(pathToRootFolder + 'translations.js')(__filename);
 const {  
-  ERROR_SERVERGENERIC,
-  ERROR_NOEMAIL,
-  ERROR_NOPASSWORD,
-  ERROR_NONAME,
-  ERROR_NOEMAILVERIFICATIONTOKEN,
-  ERROR_EMAILALREADYUSED,
-  ERROR_NAMEALREADYUSED
+  ERROR_ServerGeneric,
+  ERROR_NoEmail,
+  ERROR_NoPassword,
+  ERROR_NoName,
+  ERROR_NoEmailVerificationToken,
+  ERROR_EmailAlreadyUsed,
+  ERROR_NameAlreadyUsed
 } = require(__filename + '.lang/names.js');
-console.log(translations(ERROR_NOEMAIL));
-console.log(translations('TEST'));
 
 // Prep router
 var express = require('express');
@@ -57,24 +55,24 @@ let transporter = nodemailer.createTransport({ // create reusable transporter ob
 // ==============================
 
 function verifyEmailPresent(req, res, next) {
-  if (!req.body.email) return res.status(404).send({ auth: false, token: null, message: translations(ERROR_NOEMAIL, res.locals.language) });
+  if (!req.body.email) return res.status(404).send({ auth: false, token: null, message: translations(ERROR_NoEmail, res.locals.language) });
 
   next();
 }
 
 function verifyRegisterInfoPresent(req, res, next) {
-  if (!req.body.email) return res.status(404).send({ auth: false, token: null, message: translations(ERROR_NOEMAIL, res.locals.language) });
-  if (!req.body.password) return res.status(404).send({ auth: false, token: null, message: translations(ERROR_NOPASSWORD, res.locals.language) });
-  if (!req.body.name) return res.status(404).send({ auth: false, token: null, message: translations(ERROR_NONAME, res.locals.language) });
-  if (!req.body.emailVerificationToken) return res.status(404).send({ auth: false, token: null, message: translations(ERROR_NOEMAILVERIFICATIONTOKEN, res.locals.language) });
+  if (!req.body.email) return res.status(404).send({ auth: false, token: null, message: translations(ERROR_NoEmail, res.locals.language) });
+  if (!req.body.password) return res.status(404).send({ auth: false, token: null, message: translations(ERROR_NoPassword, res.locals.language) });
+  if (!req.body.name) return res.status(404).send({ auth: false, token: null, message: translations(ERROR_NoName, res.locals.language) });
+  if (!req.body.emailVerificationToken) return res.status(404).send({ auth: false, token: null, message: translations(ERROR_NoEmailVerificationToken, res.locals.language) });
 
   next();
 }
 
 function verifyUniqueEmail(req, res, next) {
   User.findOne({ email: req.body.email }, function(err, user) {
-    if (err) return res.status(500).send({ auth: false, token: null, message: translations(ERROR_SERVERGENERIC, res.locals.language) });
-    if (user) return res.status(404).send({ auth: false, token: null, message: translations(ERROR_EMAILALREADYUSED, res.locals.language) });
+    if (err) return res.status(500).send({ auth: false, token: null, message: translations(ERROR_ServerGeneric, res.locals.language) });
+    if (user) return res.status(404).send({ auth: false, token: null, message: translations(ERROR_EmailAlreadyUsed, res.locals.language) });
 
     next();
   });
@@ -82,8 +80,8 @@ function verifyUniqueEmail(req, res, next) {
 
 function verifyUniqueName(req, res, next) {
   User.findOne({ name: req.body.name }, function(err, user) {
-    if (err) return res.status(500).send({ auth: false, token: null, message: translations(ERROR_SERVERGENERIC, res.locals.language) });
-    if (user) return res.status(404).send({ auth: false, token: null, message: translations(ERROR_NAMEALREADYUSED, res.locals.language) });
+    if (err) return res.status(500).send({ auth: false, token: null, message: translations(ERROR_ServerGeneric, res.locals.language) });
+    if (user) return res.status(404).send({ auth: false, token: null, message: translations(ERROR_NameAlreadyUsed, res.locals.language) });
 
     next();
   });
@@ -174,7 +172,7 @@ router.get('/checkToken', VerifyToken, function(req, res, next) {
 
 router.post('/login', function(req, res) {
   User.findOne({ email: req.body.email }, function (err, user) {
-    if (err) return res.status(500).send({ auth: false, token: null, message: translations(ERROR_SERVERGENERIC, res.locals.language) });
+    if (err) return res.status(500).send({ auth: false, token: null, message: translations(ERROR_ServerGeneric, res.locals.language) });
     if (!user) return res.status(404).send({ auth: false, token: null, message: 'No user found.' });
     
     var passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
