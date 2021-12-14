@@ -1,8 +1,13 @@
 // config.js
 module.exports = {
   'secret': 'supersecret',
-  'registration': {
-    'tokenValidTimeSeconds': 300
+  'auth': {
+    'jwt': {
+      'tokenValidTimeSeconds': 86400
+    },
+    'registration': {
+      'codeValidTimeSeconds': 300
+    },
   },
   'email': {
     'from':'accounts@dabrhousegames.com',

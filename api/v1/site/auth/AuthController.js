@@ -110,7 +110,7 @@ router.post('/sendEmailVerificationCode', [verifyEmailPresent, verifyUniqueEmail
   // Generate code
   let NOW = Date.now();
   var emailVerificationCode = Math.floor(100000 + Math.random() * 900000);
-  var codeExpirationTime = NOW + (config.registration.codeValidTimeSeconds * 1000);
+  var codeExpirationTime = NOW + (config.auth.registration.codeValidTimeSeconds * 1000);
   var emailData = {
     from: config.email.from,
     to: req.body.email.toString(),
@@ -164,7 +164,7 @@ router.post('/register', [verifyRegisterInfoPresent, verifyUniqueEmail, verifyUn
     if (err) return res.status(500).send({ auth: false, token: null, message: translations(ERROR_Server_Generic, res.locals.language) });
     // create a token
     var token = jwt.sign({ id: user._id }, config.secret, {
-      expiresIn: 86400 // expires in 24 hours
+      expiresIn: config.auth.jwt.tokenValidTimeSeconds
     });
     res.status(200).send({ auth: true, token: token, message: translations(SUCCESS_Registration_Completed, res.locals.language) });
   }); 
@@ -189,7 +189,7 @@ router.post('/login', function(req, res) {
     if (!passwordIsValid) return res.status(401).send({ auth: false, token: null, message: translations(ERROR_Login_InvalidCredentials, res.locals.language) });
     
     var token = jwt.sign({ id: user._id }, config.secret, {
-      expiresIn: 86400 // expires in 24 hours
+      expiresIn: config.auth.jwt.tokenValidTimeSeconds
     });
     
     res.status(200).send({ auth: true, token: token, message: translations(SUCCESS_Login_Completed, res.locals.language) });
