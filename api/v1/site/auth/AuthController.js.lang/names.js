@@ -9,9 +9,10 @@ module.exports = {
     ERROR_Name_AlreadyUsed: 'ERROR_Name_AlreadyUsed',
     ERROR_Name_NotProvided: 'ERROR_Name_NotProvided',
     ERROR_Password_NotProvided: 'ERROR_Password_NotProvided',
+    ERROR_Registration_InvalidCredentials: 'ERROR_Registration_InvalidCredentials',
     ERROR_Server_Generic: 'ERROR_Server_Generic',
     
-    SUCCESS_EmailVerificationCode_Sent: 'SUCCESS_EmailVerificationCodeSent',
+    SUCCESS_EmailVerificationCode_Sent: 'SUCCESS_EmailVerificationCode_Sent',
     SUCCESS_Login_Completed: 'SUCCESS_Login_Completed',
     SUCCESS_Registration_Completed: 'SUCCESS_Registration_Completed',
     SUCCESS_Token_Authenticated: 'SUCCESS_Token_Authenticated',

@@ -19,7 +19,7 @@ function getTranslation(name, language = DEFAULT_LANG) {
     }
 
     if (!names[name]) {
-        console.log("Name " + name + " note available for translations in " + langsFolderPath);
+        console.log("Name " + name + " not available for translations in " + langsFolderPath);
         return "No Translation available";
     }
 

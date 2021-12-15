@@ -11,6 +11,7 @@ module.exports = {
     [NAMES.ERROR_Name_AlreadyUsed]: 'Name already in use. Please use another name.',
     [NAMES.ERROR_Name_NotProvided]: 'Request Body must contain a name field.',
     [NAMES.ERROR_Password_NotProvided]: 'Request Body must contain a password field.',
+    [NAMES.ERROR_Registration_InvalidCredentials]: 'Registration Credentials are incorrect, please review your email and email verification code.',
     [NAMES.ERROR_Server_Generic]: 'Error on the server.',
     
     [NAMES.SUCCESS_EmailVerificationCode_Sent]: 'Email Verification Code sent to the email specified',
