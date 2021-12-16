@@ -15,5 +15,8 @@ module.exports = {
     'serviceClient':'clientID',
     'privateKey':'privateKey',
     'scope':'https://mail.google.com/'
+  },
+  'database': {
+    'address': 'mongodb://localhost:27017/testing'
   }
 };
