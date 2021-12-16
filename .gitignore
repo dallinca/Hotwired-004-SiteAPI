@@ -5,13 +5,14 @@ npm-debug.log
 variables.env
 package-lock.json
 test/*.log
-config.js
-configIpPort.js
+config/config.js
+config/configIpPort.js
 sslcert/*
 nohup.out
 public
 public_old
 gitignored
+logs
 
 ######## NODE gitignore
 

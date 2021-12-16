@@ -2,7 +2,7 @@
 var pathToRootFolder = '../../../../';
 
 var jwt = require('jsonwebtoken');
-var config = require(pathToRootFolder + 'config');
+var config = require(pathToRootFolder + 'config/config');
 
 function verifyToken(req, res, next) {
   var token = req.headers['x-access-token'];

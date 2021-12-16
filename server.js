@@ -1,10 +1,11 @@
 const { exit } = require('process');
+const logger = require('./utils/logger');
 var app = require('./app');
-var configIpPort = require('./configIpPort');
+var configIpPort = require('./config/configIpPort');
 var port = process.env.PORT || configIpPort.port;
 
 if (!configIpPort.ipv4) {
-	console.log('No ipv4 address specified in ./configIpPort ');
+	logger.error('No ipv4 address specified in ./config/configIpPort ');
 	exit()
 }
 
@@ -13,7 +14,7 @@ if (typeof configIpPort.ipv4 === 'string') ipv4Array.push(configIpPort.ipv4)
 else if (Array.isArray(configIpPort.ipv4)) ipv4Array = configIpPort.ipv4
 
 if (!ipv4Array.length) {
-	console.log('No ipv4 address specified in ./configIpPort ');
+	logger.error('No ipv4 address specified in ./config/configIpPort ');
 	exit()
 }
 
@@ -23,7 +24,7 @@ if (configIpPort.https == false) {
 
 	ipv4Array.forEach(function(ipv4, index) {
 		http.createServer(app).listen(port, ipv4, function() {
-			console.log('Express server listening at ' + ipv4 + ':' + port);
+			logger.info('Express server listening at ' + ipv4 + ':' + port);
 		});
 	});
 
@@ -37,7 +38,7 @@ if (configIpPort.https == false) {
 
 	configIpPort.ipv4Array.forEach(function(ipv4, index) {
 		https.createServer(credentials, app).listen(port, ipv4, function() {
-			console.log('Express server listening on port ' + port);
+			logger.info('Express server listening on port ' + port);
 		});
 	});
 

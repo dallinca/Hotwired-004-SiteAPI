@@ -1,6 +1,6 @@
 var express = require('express');
+var db = require('./utils/db');
 var app = express();
-var db = require('./db');
 const fs = require('fs')
 
 const PUBLIC_DIR = 'public';
