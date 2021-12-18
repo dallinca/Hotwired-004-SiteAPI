@@ -25,6 +25,7 @@ if (configIpPort.https == false) {
 	ipv4Array.forEach(function(ipv4, index) {
 		http.createServer(app).listen(port, ipv4, function() {
 			logger.info('Express server listening at ' + ipv4 + ':' + port);
+			console.log('Express server listening at ' + ipv4 + ':' + port);
 		});
 	});
 
@@ -39,6 +40,7 @@ if (configIpPort.https == false) {
 	configIpPort.ipv4Array.forEach(function(ipv4, index) {
 		https.createServer(credentials, app).listen(port, ipv4, function() {
 			logger.info('Express server listening on port ' + port);
+			console.log('Express server listening on port ' + port);
 		});
 	});
 
