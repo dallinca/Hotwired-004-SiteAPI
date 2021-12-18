@@ -2,10 +2,11 @@
 var pathToRootFolder = '../../../../';
 const logger = require(pathToRootFolder + 'utils/logger');
 const config = require(pathToRootFolder + 'config/config');
-const errorCode = require(pathToRootFolder + 'utils/errorCodes.js')(__filename); // nextErrorCode = '00021'; // Only used for keeping loose track of next ID assignment
+const errorCode = require(pathToRootFolder + 'utils/errorCodes.js')(__filename); // nextErrorCode = '00027'; // Only used for keeping loose track of next ID assignment
 var translations = require(pathToRootFolder + 'utils/translations.js')(__filename);
 const {
   ERROR_Email_AlreadyUsed,
+  ERROR_Email_NotAUser,
   ERROR_Email_NotProvided,
   ERROR_EmailVerificationCode_AlreadySent,
   ERROR_EmailVerificationCode_NotProvided,
@@ -22,7 +23,8 @@ const {
   SUCCESS_Login_Completed,
   SUCCESS_Registration_Completed,
   SUCCESS_Token_Authenticated,
-  SUCCESS_User_DataProvided
+  SUCCESS_User_DataProvided,
+  SUCCESS_User_PasswordReset
 } = require(__filename + '.lang/names.js');
 
 // Prep router
@@ -78,6 +80,14 @@ function verifyRegisterInfoPresent(req, res, next) {
   next();
 }
 
+function verifyChangePasswordInfoPresent(req, res, next) {
+  if (!req.body.email) return res.status(400).send({ auth: false, token: null, code: errorCode('00021'), message: translations(ERROR_Email_NotProvided, res.locals.language) });
+  if (!req.body.password) return res.status(400).send({ auth: false, token: null, code: errorCode('00022'), message: translations(ERROR_Password_NotProvided, res.locals.language) });
+  if (!req.body.emailVerificationCode) return res.status(400).send({ auth: false, token: null, code: errorCode('00023'), message: translations(ERROR_EmailVerificationCode_NotProvided, res.locals.language) });
+
+  next();
+}
+
 function verifyUniqueEmail(req, res, next) {
   User.findOne({ email: req.body.email }, function(err, user) {
     if (err) {
@@ -102,7 +112,7 @@ function verifyUniqueName(req, res, next) {
   });
 }
 
-function verifyVisitorEmailCode(req, res, next) {
+function verifyEmailCode(req, res, next) {
   Visitor.findOne({ email: req.body.email }, function(err, visitor) {
     if (err) {
       logger.error(`500 - ${errorCode('00010')} - ${err}`);
@@ -111,6 +121,18 @@ function verifyVisitorEmailCode(req, res, next) {
     if (!visitor) return res.status(401).send({ auth: false, token: null, token: null, code: errorCode('00020'), message: translations(ERROR_Registration_InvalidCredentials, res.locals.language) });
     if (visitor.codeExpirationTime < Date.now()) return res.status(401).send({ auth: false, token: null, code: errorCode('00011'), message: translations(ERROR_EmailVerificationCode_Expired, res.locals.language) });
     if (visitor.emailVerificationCode != req.body.emailVerificationCode) return res.status(401).send({ auth: false, token: null, code: errorCode('00012'), message: translations(ERROR_EmailVerificationCode_Invalid, res.locals.language) });
+
+    next();
+  });
+}
+
+function verifyIsUser(req, res, next) {
+  User.findOne({ email: req.body.email }, function(err, user) {
+    if (err) {
+      logger.error(`500 - ${errorCode('00024')} - ${err}`);
+      return res.status(500).send({ auth: false, token: null, token: null, code: errorCode('00024'), message: translations(ERROR_Server_Generic, res.locals.language) });
+    }
+    if (!user) return res.status(409).send({ auth: false, token: null, token: null, code: errorCode('00025'), message: translations(ERROR_Email_NotAUser, res.locals.language) });
 
     next();
   });
@@ -126,7 +148,7 @@ async function sendEmail(emailData){
 // ===== Routes
 // ==============================
 
-router.post('/sendEmailVerificationCode', [verifyEmailPresent, verifyUniqueEmail], function(req, res) {
+router.post('/sendEmailVerificationCode', [verifyEmailPresent], function(req, res) {
   // Generate code
   let NOW = Date.now();
   var emailVerificationCode = Math.floor(100000 + Math.random() * 900000);
@@ -178,7 +200,7 @@ router.post('/sendEmailVerificationCode', [verifyEmailPresent, verifyUniqueEmail
   });  
 });
 
-router.post('/register', [verifyRegisterInfoPresent, verifyUniqueEmail, verifyUniqueName, verifyVisitorEmailCode], function(req, res) {
+router.post('/register', [verifyRegisterInfoPresent, verifyUniqueEmail, verifyUniqueName, verifyEmailCode], function(req, res) {
   
   var hashedPassword = bcrypt.hashSync(req.body.password, 8);
   
@@ -198,6 +220,29 @@ router.post('/register', [verifyRegisterInfoPresent, verifyUniqueEmail, verifyUn
     });
     res.status(200).send({ auth: true, token: token, message: translations(SUCCESS_Registration_Completed, res.locals.language) });
   }); 
+});
+
+router.post('/resetPassword', [verifyChangePasswordInfoPresent, verifyIsUser, verifyEmailCode], function(req, res) {
+  
+  var emailData = {
+    from: config.email.from,
+    to: req.body.email.toString(),
+    subject: 'Hotwired Gaming - Password was Reset',
+    text: 'Please note that your Password was just reset for HotwiredGaming.com. If this was not done by you, we recommend you review your password and security for your email and HotwiredGaming.com.',
+    html: '<p>Please note that your Password was just reset for <b>HotwiredGaming.com</b>. If this was not done by you, we recommend you review your password and security for your email and <b>HotwiredGaming.com</b>.</p>'
+  };
+
+  var hashedPassword = bcrypt.hashSync(req.body.password, 8);
+
+  User.findOneAndUpdate({ email: req.body.email }, { 'password': hashedPassword }, { useFindAndModify: false }, function(err, user){
+    if (err || !user) {
+      logger.error(`500 - ${errorCode('00026')} - ${err}`);
+      return res.status(500).send({ auth: false, token: null, code: errorCode('00026'), message: translations(ERROR_Server_Generic, res.locals.language) });
+    } else {
+      sendEmail(emailData);
+      return res.status(200).send({ auth: false, token: null, message: translations(SUCCESS_User_PasswordReset, res.locals.language) });
+    }
+  });
 });
 
 router.get('/me', [VerifyToken, LoadUserInfo], function(req, res, next) {

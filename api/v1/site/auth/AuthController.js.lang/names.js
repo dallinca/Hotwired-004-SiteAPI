@@ -1,5 +1,6 @@
 module.exports = {    
     ERROR_Email_AlreadyUsed: 'ERROR_Email_AlreadyUsed',
+    ERROR_Email_NotAUser: 'ERROR_Email_NotAUser',
     ERROR_Email_NotProvided: 'ERROR_Email_NotProvided',
     ERROR_EmailVerificationCode_AlreadySent: 'ERROR_EmailVerificationCode_AlreadySent',
     ERROR_EmailVerificationCode_NotProvided: 'ERROR_EmailVerificationCode_NotProvided',
@@ -17,5 +18,6 @@ module.exports = {
     SUCCESS_Registration_Completed: 'SUCCESS_Registration_Completed',
     SUCCESS_Token_Authenticated: 'SUCCESS_Token_Authenticated',
     SUCCESS_User_DataProvided: 'SUCCESS_User_DataProvided',
+    SUCCESS_User_PasswordReset: 'SUCCESS_User_PasswordReset'
     
 };

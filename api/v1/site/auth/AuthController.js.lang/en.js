@@ -2,6 +2,7 @@ const NAMES = require('./names.js');
 
 module.exports = {
     [NAMES.ERROR_Email_AlreadyUsed]: 'Email already in use. Please use another email.',
+    [NAMES.ERROR_Email_NotAUser]: 'Email provided is not currently registered as a user',
     [NAMES.ERROR_Email_NotProvided]: 'Request Body must contain an email field.',
     [NAMES.ERROR_EmailVerificationCode_AlreadySent]: 'Email Verification Code was already sent to this address recently. Please check the email messages thoroughly, or wait a few minutes before trying again.',
     [NAMES.ERROR_EmailVerificationCode_NotProvided]: 'Request Body must contain an email verification code.',
@@ -18,5 +19,6 @@ module.exports = {
     [NAMES.SUCCESS_Login_Completed]: 'Login Successful',
     [NAMES.SUCCESS_Registration_Completed]: 'Registration Successful',
     [NAMES.SUCCESS_Token_Authenticated]: 'Token Authenticated',
-    [NAMES.SUCCESS_User_DataProvided]: 'User data provided'
+    [NAMES.SUCCESS_User_DataProvided]: 'User data provided',
+    [NAMES.SUCCESS_User_PasswordReset]: 'User password reset successfully'
 };
