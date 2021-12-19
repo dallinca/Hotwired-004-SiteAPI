@@ -201,7 +201,15 @@ router.post('/sendEmailVerificationCode', [verifyEmailPresent], function(req, re
 });
 
 router.post('/register', [verifyRegisterInfoPresent, verifyUniqueEmail, verifyUniqueName, verifyEmailCode], function(req, res) {
-  
+
+  var emailData = {
+    from: config.email.from,
+    to: req.body.email.toString(),
+    subject: 'Hotwired Gaming - Account Registered',
+    text: 'Please note that your email was just used to register for an account on HotwiredGaming.com. If this was not done by you, we recommend you review your password and security for your email and HotwiredGaming.com.',
+    html: '<p>Please note that your email was just used to register for an account on <b>HotwiredGaming.com</b>. If this was not done by you, we recommend you review your password and security for your email and <b>HotwiredGaming.com</b>.</p>'
+  };
+
   var hashedPassword = bcrypt.hashSync(req.body.password, 8);
   
   User.create({
@@ -210,15 +218,18 @@ router.post('/register', [verifyRegisterInfoPresent, verifyUniqueEmail, verifyUn
     password : hashedPassword
   },
   function (err, user) {
-    if (err) {
+    if (err || !user) {
       logger.error(`500 - ${errorCode('00016')} - ${err}`);
       return res.status(500).send({ auth: false, token: null, code: errorCode('00016'), message: translations(ERROR_Server_Generic, res.locals.language) });
     }
-    // create a token
-    var token = jwt.sign({ id: user._id }, config.secret, {
-      expiresIn: config.auth.jwt.tokenValidTimeSeconds
-    });
-    res.status(200).send({ auth: true, token: token, message: translations(SUCCESS_Registration_Completed, res.locals.language) });
+    if (user) {
+      // create a token
+      var token = jwt.sign({ id: user._id }, config.secret, {
+        expiresIn: config.auth.jwt.tokenValidTimeSeconds
+      });
+      sendEmail(emailData);
+      res.status(200).send({ auth: true, token: token, message: translations(SUCCESS_Registration_Completed, res.locals.language) });
+    }
   }); 
 });
 
