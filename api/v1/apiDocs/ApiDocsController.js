@@ -9,7 +9,7 @@ router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 
 // Prep Auth
-var VerifyToken = require(pathToRootFolder + 'api/v1/site/auth/VerifyToken');
+var VerifyToken = require(pathToRootFolder + 'utils/VerifyToken');
 var LoadUserInfo = require(pathToRootFolder + 'api/v1/site/auth/LoadUserInfo');
 
 // Prep models

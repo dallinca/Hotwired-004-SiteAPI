@@ -1,5 +1,5 @@
 
-var pathToRootFolder = '../../../../';
+var pathToRootFolder = '../';
 
 var jwt = require('jsonwebtoken');
 var config = require(pathToRootFolder + 'config/config');
@@ -10,7 +10,7 @@ function verifyToken(req, res, next) {
     
   jwt.verify(token, config.secret, function(err, decoded) {
     if (err) return res.status(500).send({ auth: false, message: 'Failed to authenticate token.' });
-      
+    console.log(decoded);
     // if everything good, save to request for use in other routes
     res.locals.userId = decoded.id;
     next();

@@ -1,5 +1,6 @@
 const errorCodes = {
-    '/api/v1/site/auth/AuthController.js': '00001-'
+    '/api/v1/site/auth/AuthController.js': '00001-',
+    '/api/v1/admin/auth/AuthController.js': '00002-'
 };
 
 

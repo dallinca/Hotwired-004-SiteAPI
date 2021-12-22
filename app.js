@@ -15,15 +15,17 @@ const ABS_PRIVATE_DIR = __dirname + '/' + PRIVATE_DIR;
 // ===== API
 // ==============================
 
-// Auth
-var AuthController = require('./api/v1/site/auth/AuthController');
-app.use('/api/v1/site/auth', AuthController);
+// SITE
+var Site_AuthController = require('./api/v1/site/auth/AuthController');
+app.use('/api/v1/site/auth', Site_AuthController);
+var Site_ChatController = require('./api/v1/site/chat/ChatController');
+app.use('/api/v1/site/chat', Site_ChatController);
 
-// Chat
-var ChatContoller = require('./api/v1/site/chat/ChatController');
-app.use('/api/v1/site/chat', ChatContoller);
+// ADMIN
+var Admin_AuthController = require('./api/v1/admin/auth/AuthController');
+app.use('/api/v1/admin/auth', Admin_AuthController);
 
-// Api
+// API DOCS
 var ApiDocsContoller = require('./api/v1/apiDocs/ApiDocsController');
 app.use('/api/v1/apiDocs', ApiDocsContoller);
 
