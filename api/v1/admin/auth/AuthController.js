@@ -39,6 +39,8 @@ const P = {
   P_Admin_User_Add: 'P_Admin_User_Add',
   P_Admin_User_Approve: 'P_Admin_User_Approve',
   P_Admin_User_Email_VerificationCode_Send: 'P_Admin_User_Email_VerificationCode_Send',
+  P_Admin_User_Email_VerificationCode_SendOwn: 'P_Admin_User_Email_VerificationCode_SendOwn',
+  P_Admin_User_Email_VerificationCode_SendOther: 'P_Admin_User_Email_VerificationCode_SendOther',
   P_Admin_User_Remove: 'P_Admin_User_Remove'
 }
 
@@ -74,6 +76,10 @@ let transporter = nodemailer.createTransport({ // create reusable transporter ob
     scope: config.email.scope
   },
 });
+
+(function SetDefaultAdminUser() {
+  console.log("Inside the testing and stuff!");
+})();
 
 // ==============================
 // ===== Helping Functions
@@ -276,7 +282,7 @@ router.post('/approveUser', [VerifyToken, cacheTokenOwnerInfo, verifyPermission(
       logger.error(`500 - ${errorCode('00039')} - ${err}`);
       return res.status(500).send({ auth: false, token: null, code: errorCode('00039'), message: translations(ERROR_Server_Generic, res.locals.language) });
     } else {
-      //sendEmail(emailData);
+      sendEmail(emailData);
       return res.status(200).send({ auth: false, token: null, message: translations(SUCCESS_User_ApprovalUpdated, res.locals.language) });
     }
   });
