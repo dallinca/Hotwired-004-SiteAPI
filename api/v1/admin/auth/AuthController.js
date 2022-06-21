@@ -370,8 +370,8 @@ router.post('/resetPassword', [verifyChangePasswordInfoPresent, verifyIsUser, ve
   });
 });
 
-router.get('/me', [VerifyToken/*, LoadUserInfo*/], function(req, res, next) {
-    res.status(200).send({ auth: true, token: null, message: translations(SUCCESS_User_DataProvided, res.locals.language), 'user': res.locals.userInfo });
+router.get('/me', [VerifyToken, cacheTokenOwnerInfo], function(req, res, next) {
+    res.status(200).send({ auth: true, token: null, message: translations(SUCCESS_User_DataProvided, res.locals.language), 'user': res.locals.tokenOwnerInfo });
 });
 
 router.get('/checkToken', VerifyToken, function(req, res, next) {
