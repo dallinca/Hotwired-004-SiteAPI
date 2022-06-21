@@ -11,6 +11,8 @@ sslcert/*
 nohup.out
 public
 public_old
+public_admin
+public_site
 gitignored
 logs
 
