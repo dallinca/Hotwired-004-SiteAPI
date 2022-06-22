@@ -329,7 +329,8 @@ router.post('/register', [verifyRegisterInfoPresent, verifyUniqueEmail, verifyAp
   User.create({
     name : req.body.name,
     email : req.body.email,
-    password : hashedPassword
+    password : hashedPassword,
+    permissions : [P_Admin_User_Email_VerificationCode_SendOwn]
   },
   function (err, user) {
     if (err || !user) {
