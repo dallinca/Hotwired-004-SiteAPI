@@ -1,10 +1,16 @@
-// AuthController.js
+// Set Root Folder path -- CONTROLLER SPECIFIC 
 var pathToRootFolder = '../../../../';
-const logger = require(pathToRootFolder + 'utils/logger');
-const config = require(pathToRootFolder + 'config/config');
-var VerifyToken = require(pathToRootFolder + 'utils/VerifyToken');
-const errorCode = require(pathToRootFolder + 'utils/errorCodes.js')(__filename); // nextErrorCode = '00027'; // Only used for keeping loose track of next ID assignment
-var translations = require(pathToRootFolder + 'utils/translations.js')(__filename);
+
+// Standard Utilities
+const {
+  config,
+  logger,
+  verifyToken, cacheTokenOwnerInfo, verifyPermission,
+  errorCode, // nextErrorCode = '00027'; // Only used for keeping loose track of next ID assignment
+  translations,
+  router,
+} = require(pathToRootFolder + 'utils/standardUtils.js')(__filename);
+
 const {
   ERROR_Email_AlreadyUsed,
   ERROR_Email_NotAUser,
@@ -28,16 +34,6 @@ const {
   SUCCESS_User_PasswordReset
 } = require(__filename + '.lang/names.js');
 
-// Prep router
-var express = require('express');
-var router = express.Router();
-var bodyParser = require('body-parser');
-router.use(bodyParser.urlencoded({ extended: false }));
-router.use(bodyParser.json());
-
-// Prep Auth
-var LoadUserInfo = require('./LoadUserInfo');
-
 // Prep models
 var User = require(pathToRootFolder + 'mongoose_models/v1/site/User');
 var Visitor = require(pathToRootFolder + 'mongoose_models/v1/site/Visitor');
@@ -45,21 +41,7 @@ var Visitor = require(pathToRootFolder + 'mongoose_models/v1/site/Visitor');
 // Prep Additional Libraries
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcryptjs');
-const nodemailer = require("nodemailer");
-
-// Prep Email Transport
-let transporter = nodemailer.createTransport({ // create reusable transporter object using the default SMTP transport
-  host: "smtp.gmail.com",
-  port: 465,
-  secure: true, // true for 465, false for other ports
-  auth: {
-    type: 'OAuth2',
-    user: config.email.from,
-    serviceClient: config.email.serviceClient,
-    privateKey: config.email.privateKey,
-    scope: config.email.scope
-  },
-});
+let { sendEmail } = require(pathToRootFolder + "utils/nodemailerTransport.js");
 
 // ==============================
 // ===== Helping Functions
@@ -136,12 +118,6 @@ function verifyIsUser(req, res, next) {
 
     next();
   });
-}
-
-async function sendEmail(emailData){
-  let sentEmailInfo = await transporter.sendMail(emailData);
-  logger.info("Email Verification code sent to %s: %s", emailData.to, sentEmailInfo.messageId);
-  return;
 }
 
 // ==============================
@@ -256,11 +232,11 @@ router.post('/resetPassword', [verifyChangePasswordInfoPresent, verifyIsUser, ve
   });
 });
 
-router.get('/me', [VerifyToken, LoadUserInfo], function(req, res, next) {
+router.get('/me', [verifyToken, cacheTokenOwnerInfo], function(req, res, next) {
     res.status(200).send({ auth: true, token: null, message: translations(SUCCESS_User_DataProvided, res.locals.language), 'user': res.locals.userInfo });
 });
 
-router.get('/checkToken', VerifyToken, function(req, res, next) {
+router.get('/checkToken', verifyToken, function(req, res, next) {
   res.status(200).send({ auth: true, message: translations(SUCCESS_Token_Authenticated, res.locals.language) });
 });
 

@@ -1,10 +1,17 @@
-// AuthController.js
+// Set Root Folder path -- CONTROLLER SPECIFIC 
 var pathToRootFolder = '../../../../';
-const logger = require(pathToRootFolder + 'utils/logger');
-const config = require(pathToRootFolder + 'config/config');
-var VerifyToken = require(pathToRootFolder + 'utils/VerifyToken');
-const errorCode = require(pathToRootFolder + 'utils/errorCodes.js')(__filename); // nextErrorCode = '00040'; // Only used for keeping loose track of next ID assignment
-var translations = require(pathToRootFolder + 'utils/translations.js')(__filename);
+
+// Standard Utilities
+const {
+  config,
+  logger,
+  verifyToken, cacheTokenOwnerInfo, verifyPermission,
+  errorCode, // nextErrorCode = '00040'; // Only used for keeping loose track of next ID assignment
+  translations,
+  router,
+} = require(pathToRootFolder + 'utils/standardUtils.js')(__filename);
+
+// Prep Error Messages, Success Messages, Permission strings -- CONTROLLER SPECIFIC
 const {
   ERROR_Example,
   SUCCESS_Example,
@@ -44,42 +51,14 @@ const P = {
   P_Admin_User_Remove: 'P_Admin_User_Remove'
 }
 
-// Prep router
-var express = require('express');
-var router = express.Router();
-var bodyParser = require('body-parser');
-router.use(bodyParser.urlencoded({ extended: false }));
-router.use(bodyParser.json());
-
-// Prep Auth
-//var LoadUserInfo = require('./LoadUserInfo');
-
-// Prep models
+// Prep models -- CONTROLLER SPECIFIC
 var User = require(pathToRootFolder + 'mongoose_models/v1/admin/User');
 var Visitor = require(pathToRootFolder + 'mongoose_models/v1/admin/Visitor');
 
-// Prep Additional Libraries
+// Prep Additional Libraries -- CONTROLLER SPECIFIC
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcryptjs');
-const nodemailer = require("nodemailer");
-
-// Prep Email Transport
-let transporter = nodemailer.createTransport({ // create reusable transporter object using the default SMTP transport
-  host: "smtp.gmail.com",
-  port: 465,
-  secure: true, // true for 465, false for other ports
-  auth: {
-    type: 'OAuth2',
-    user: config.email.from,
-    serviceClient: config.email.serviceClient,
-    privateKey: config.email.privateKey,
-    scope: config.email.scope
-  },
-});
-
-(function SetDefaultAdminUser() {
-  console.log("Inside the testing and stuff!");
-})();
+let { sendEmail } = require(pathToRootFolder + "utils/nodemailerTransport.js");
 
 // ==============================
 // ===== Helping Functions
@@ -201,36 +180,11 @@ function verifyIsNotVisitor(req, res, next) {
   });
 }
 
-function verifyPermission(permission) {
-  return verifyPermission[permission] || (verifyPermission[permission] = function(req, res, next) {
-    if (!res.locals.tokenOwnerInfo.permissions.includes(permission)) return res.status(403).send({ auth: false, token: null, token: null, code: errorCode('00030'), message: translations(ERROR_User_Permissions, res.locals.language) }); 
-    next();
-  })
-}
-
-function cacheTokenOwnerInfo(req, res, next) {  
-  User.findById(res.locals.userId, { password: 0 }, function (err, user) {
-    if (err || !user) {
-      logger.error(`500 - ${errorCode('00029')} - ${err}`);
-      return res.status(500).send({ auth: false, token: null, code: errorCode('00029'), message: translations(ERROR_Server_Generic, res.locals.language) });
-    }
-    
-    res.locals.tokenOwnerInfo = user;
-    next();
-  });
-}
-
-async function sendEmail(emailData){
-  let sentEmailInfo = await transporter.sendMail(emailData);
-  logger.info("Email Verification code sent to %s: %s", emailData.to, sentEmailInfo.messageId);
-  return;
-}
-
 // ==============================
 // ===== Routes
 // ==============================
 
-router.post('/sendEmailVerificationCode', [VerifyToken, cacheTokenOwnerInfo, verifyPermission(P.P_Admin_User_Email_VerificationCode_Send), verifyEmailPresent, verifyIsVisitor], function(req, res) {
+router.post('/sendEmailVerificationCode', [verifyToken, cacheTokenOwnerInfo, verifyPermission(P.P_Admin_User_Email_VerificationCode_Send), verifyEmailPresent, verifyIsVisitor], function(req, res) {
   // Generate code
   let NOW = Date.now();
   var emailVerificationCode = Math.floor(100000 + Math.random() * 900000);
@@ -267,7 +221,7 @@ router.post('/sendEmailVerificationCode', [VerifyToken, cacheTokenOwnerInfo, ver
   });  
 });
 
-router.post('/approveUser', [VerifyToken, cacheTokenOwnerInfo, verifyPermission(P.P_Admin_User_Approve), verifyApproveUserInfoPresent, verifyUniqueEmail, verifyIsVisitor], function(req, res) {
+router.post('/approveUser', [verifyToken, cacheTokenOwnerInfo, verifyPermission(P.P_Admin_User_Approve), verifyApproveUserInfoPresent, verifyUniqueEmail, verifyIsVisitor], function(req, res) {
   
   var emailData = {
     from: config.email.from,
@@ -288,7 +242,7 @@ router.post('/approveUser', [VerifyToken, cacheTokenOwnerInfo, verifyPermission(
   });
 })
 
-router.post('/addUser', [VerifyToken, cacheTokenOwnerInfo, verifyPermission(P.P_Admin_User_Add), verifyEmailPresent, verifyUniqueEmail, verifyIsNotVisitor], function(req, res) {
+router.post('/addUser', [verifyToken, cacheTokenOwnerInfo, verifyPermission(P.P_Admin_User_Add), verifyEmailPresent, verifyUniqueEmail, verifyIsNotVisitor], function(req, res) {
   
   var emailData = {
     from: config.email.from,
@@ -371,11 +325,11 @@ router.post('/resetPassword', [verifyChangePasswordInfoPresent, verifyIsUser, ve
   });
 });
 
-router.get('/me', [VerifyToken, cacheTokenOwnerInfo], function(req, res, next) {
+router.get('/me', [verifyToken, cacheTokenOwnerInfo], function(req, res, next) {
     res.status(200).send({ auth: true, token: null, message: translations(SUCCESS_User_DataProvided, res.locals.language), 'user': res.locals.tokenOwnerInfo });
 });
 
-router.get('/checkToken', VerifyToken, function(req, res, next) {
+router.get('/checkToken', verifyToken, function(req, res, next) {
   res.status(200).send({ auth: true, message: translations(SUCCESS_Token_Authenticated, res.locals.language) });
 });
 

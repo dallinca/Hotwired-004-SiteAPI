@@ -1,21 +1,22 @@
-// ApiDocsController.js
+// Set Root Folder path -- CONTROLLER SPECIFIC 
 var pathToRootFolder = '../../../';
 
-// Prep router
-var express = require('express');
-var router = express.Router();
-var bodyParser = require('body-parser');
-router.use(bodyParser.urlencoded({ extended: false }));
-router.use(bodyParser.json());
+// Standard Utilities
+const {
+	config,
+	logger,
+	verifyToken, cacheTokenOwnerInfo, verifyPermission,
+	errorCode, // nextErrorCode = '00040'; // Only used for keeping loose track of next ID assignment
+	translations,
+	router,
+} = require(pathToRootFolder + 'utils/standardUtils.js')(__filename);
 
-// Prep Auth
-var VerifyToken = require(pathToRootFolder + 'utils/VerifyToken');
-var LoadUserInfo = require(pathToRootFolder + 'api/v1/site/auth/LoadUserInfo');
+// Prep Error Messages, Success Messages, Permission strings -- CONTROLLER SPECIFIC
 
-// Prep models
+// Prep models -- CONTROLLER SPECIFIC
 var ApiDoc = require(pathToRootFolder + 'mongoose_models/v1/ApiDoc.js');
 
-// Prep Additional Libraries
+// Prep Additional Libraries -- CONTROLLER SPECIFIC
 // ..
 
 

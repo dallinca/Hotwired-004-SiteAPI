@@ -1,21 +1,23 @@
-// ChatController.js
+// Set Root Folder path -- CONTROLLER SPECIFIC 
 var pathToRootFolder = '../../../../';
 
-// Prep router
-var express = require('express');
-var router = express.Router();
-var bodyParser = require('body-parser');
-router.use(bodyParser.urlencoded({ extended: false }));
-router.use(bodyParser.json());
+// Standard Utilities
+const {
+  config,
+  logger,
+  verifyToken, cacheTokenOwnerInfo, verifyPermission,
+  errorCode, // nextErrorCode = '00040'; // Only used for keeping loose track of next ID assignment
+  translations,
+  router,
+} = require(pathToRootFolder + 'utils/standardUtils.js')(__filename);
 
-// Prep Auth
-var VerifyToken = require(pathToRootFolder + 'utils/VerifyToken');
-var LoadUserInfo = require(pathToRootFolder + 'api/v1/site/auth/LoadUserInfo');
+// Prep Error Messages, Success Messages, Permission strings -- CONTROLLER SPECIFIC
 
-// Prep models
+
+// Prep models -- CONTROLLER SPECIFIC
 var Chat = require(pathToRootFolder + 'mongoose_models/v1/site/Chat');
 
-// Prep Additional Libraries
+// Prep Additional Libraries -- CONTROLLER SPECIFIC
 // ..
 
 // Settings
@@ -120,7 +122,7 @@ router.get('/general', [initGeneralChat, getGeneralChat, clipGeneralChat], funct
   return res.status(200).send({ auth: true, message: 'success', chat: res.locals.returnMessages });
 });
 
-router.post('/general', [VerifyToken, LoadUserInfo], function(req, res, next) {
+router.post('/general', [verifyToken, cacheTokenOwnerInfo], function(req, res, next) {
 
   // Verify message is set
   if (!req.body || !req.body.message) {
