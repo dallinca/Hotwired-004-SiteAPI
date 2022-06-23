@@ -3,6 +3,7 @@ var pathToRootFolder = '../';
 
 var jwt = require('jsonwebtoken');
 var config = require(pathToRootFolder + 'config/config');
+const logger = require(pathToRootFolder + 'utils/logger');
 
 // Prep models 
 var adminUser = require(pathToRootFolder + 'mongoose_models/v1/admin/User');
@@ -41,7 +42,8 @@ function cacheTokenOwnerInfo(req, res, next) {
 
   User.findById(res.locals.userId, { password: 0 }, function (err, user) {
     if (err || !user) {
-      logger.error(`500 - ${errorCode('00029')} - ${err}`);
+      logger.error(`500 - ${err}`);
+      //logger.error(`500 - ${errorCode('00029')} - ${err}`);
       return res.status(500).send({ auth: false, token: null, message: 'Failed to cache token information.' });
     }
     
@@ -50,11 +52,18 @@ function cacheTokenOwnerInfo(req, res, next) {
   });
 }
 
-function verifyPermission(permission) {
+/*function verifyPermission(permission) {
   return verifyPermission[permission] || (verifyPermission[permission] = function(req, res, next) {
     if (!res.locals.tokenOwnerInfo.permissions.includes(permission)) return res.status(403).send({ auth: false, token: null, token: null, message: 'Insufficient permissions' }); 
     next();
   })
+}*/
+
+function verifyPermission(permission) {
+  return function(req, res, next) {
+    if (!res.locals.tokenOwnerInfo.permissions.includes(permission)) return res.status(403).send({ auth: false, token: null, token: null, message: 'Insufficient permissions' }); 
+    next();
+  }
 }
 
 module.exports = { verifyToken, cacheTokenOwnerInfo, verifyPermission };

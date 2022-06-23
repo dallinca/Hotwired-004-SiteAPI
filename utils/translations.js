@@ -1,36 +1,43 @@
-var langs = null;
+/*var langs = null;
 var names = null;
 var translations = {};
-var langsFolderPath = null;
+var langsFolderPath = null;*/
 const DEFAULT_LANG = 'en';
 
-function getTranslation(name, language = DEFAULT_LANG) {
-    if (!langs.includes(language)) {
-        console.log("Language " + language + " not available for translations in " + langsFolderPath);
-        if (language == DEFAULT_LANG) {
+function getTranslationFunction({ langs, names, translations, langsFolderPath }) {
+    return function getTranslation(name, language = DEFAULT_LANG) {
+        if (!langs.includes(language)) {
+            console.log("Language " + language + " not available for translations in " + langsFolderPath);
+            if (language == DEFAULT_LANG) {
+                return "No Translation available";
+            }
+            if (!langs.includes(DEFAULT_LANG)) {
+                console.log("Default language " + language + " not available for translations in " + langsFolderPath);
+                return "No Translation available";
+            } else {
+                language = DEFAULT_LANG;
+            }
+        }
+    
+        if (!names[name]) {
+            console.log("Name " + name + " not available for translations in " + langsFolderPath);
             return "No Translation available";
         }
-        if (!langs.includes(DEFAULT_LANG)) {
-            console.log("Default language " + language + " not available for translations in " + langsFolderPath);
-            return "No Translation available";
+    
+        if (translations[language][name]) {
+            return translations[language][name]
         } else {
-            language = DEFAULT_LANG;
+            return "No Translation available";
         }
-    }
-
-    if (!names[name]) {
-        console.log("Name " + name + " not available for translations in " + langsFolderPath);
-        return "No Translation available";
-    }
-
-    if (translations[language][name]) {
-        return translations[language][name]
-    } else {
-        return "No Translation available";
     }
 }
 
 function getLanguages(originFilePath) {
+    var langs = null;
+    var names = null;
+    var translations = {};
+    var langsFolderPath = null;
+
     // Verify originating file path is provided
     if (!originFilePath) {
         console.log("Must supply filePath of file using translations. Pass __filename, to the function returned by require.");
@@ -57,7 +64,7 @@ function getLanguages(originFilePath) {
         translations[value] = require(langsFolderPath + value + '.js');
     });
 
-    return getTranslation;
+    return getTranslationFunction({ langs, names, translations, langsFolderPath });
 }
 
 
