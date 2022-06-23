@@ -39,7 +39,7 @@ function cacheTokenOwnerInfo(req, res, next) {
     return res.status(500).send({ auth: false, token: null, message: 'Unrecognized portal.' });
   }
 
-  User.findById(res.locals.userId, { password: 0 }, function (err, user) {
+  User.findById(res.locals.userId, { password: 0, _id: 0, __v: 0 }, function (err, user) {
     if (!user) console.log("not user");
     if (err) console.log(err) 
     if (err || !user) {
