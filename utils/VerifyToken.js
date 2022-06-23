@@ -1,16 +1,13 @@
-// Set Root Folder path
-var pathToRootFolder = '../';
-
 var jwt = require('jsonwebtoken');
-var config = require(pathToRootFolder + 'config/config');
-const logger = require(pathToRootFolder + 'utils/logger');
+var config = require(global.appRoot + '/config/config');
+const logger = require(global.appRoot + '/utils/logger');
 
 // Prep models 
-var adminUser = require(pathToRootFolder + 'mongoose_models/v1/admin/User');
-//var Visitor = require(pathToRootFolder + 'mongoose_models/v1/admin/Visitor');
+var adminUser = require(global.appRoot + '/mongoose_models/v1/admin/User');
+//var Visitor = require(global.appRoot + '/mongoose_models/v1/admin/Visitor');
 
-var siteUser = require(pathToRootFolder + 'mongoose_models/v1/site/User');
-//var Visitor = require(pathToRootFolder + 'mongoose_models/v1/site/Visitor');
+var siteUser = require(global.appRoot + '/mongoose_models/v1/site/User');
+//var Visitor = require(global.appRoot + '/mongoose_models/v1/site/Visitor');
 
 function getPortal(req) {
   return req.originalUrl.split("/")[3]; 

@@ -1,7 +1,3 @@
-/*var langs = null;
-var names = null;
-var translations = {};
-var langsFolderPath = null;*/
 const DEFAULT_LANG = 'en';
 
 function getTranslationFunction({ langs, names, translations, langsFolderPath }) {

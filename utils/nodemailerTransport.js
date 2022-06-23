@@ -1,8 +1,5 @@
-// Set Root Folder path
-var pathToRootFolder = '../';
-
-const config = require(pathToRootFolder + 'config/config');
-const logger = require(pathToRootFolder + 'utils/logger');
+const config = require(global.appRoot + '/config/config');
+const logger = require(global.appRoot + '/utils/logger');
 
 const nodemailer = require("nodemailer");
 let transporter = nodemailer.createTransport({ // Prep Email Transport -- create reusable transporter object using the default SMTP transport

@@ -1,6 +1,3 @@
-// Set Root Folder path -- CONTROLLER SPECIFIC 
-var pathToRootFolder = '../../../';
-
 // Standard Utilities
 const {
 	config,
@@ -9,12 +6,12 @@ const {
 	errorCode, // nextErrorCode = '00040'; // Only used for keeping loose track of next ID assignment
 	translations,
 	router,
-} = require(pathToRootFolder + 'utils/standardUtils.js')(__filename);
+} = require(global.appRoot + '/utils/standardUtils.js')(__filename);
 
 // Prep Error Messages, Success Messages, Permission strings -- CONTROLLER SPECIFIC
 
 // Prep models -- CONTROLLER SPECIFIC
-var ApiDoc = require(pathToRootFolder + 'mongoose_models/v1/ApiDoc.js');
+var ApiDoc = require(global.appRoot + '/mongoose_models/v1/ApiDoc.js');
 
 // Prep Additional Libraries -- CONTROLLER SPECIFIC
 // ..

@@ -1,12 +1,9 @@
-// Set Root Folder path
-var pathToRootFolder = '../';
-
 // Standard Configs
-const config = require(pathToRootFolder + 'config/config');
+const config = require(global.appRoot + '/config/config');
 
 // Standard Requires -- ALL CONTROLLERS
-const logger = require(pathToRootFolder + 'utils/logger');
-const { verifyToken, cacheTokenOwnerInfo, verifyPermission } = require(pathToRootFolder + 'utils/VerifyToken');
+const logger = require(global.appRoot + '/utils/logger');
+const { verifyToken, cacheTokenOwnerInfo, verifyPermission } = require(global.appRoot + '/utils/VerifyToken');
 
 module.exports = (fileName) => {
 
@@ -21,8 +18,8 @@ module.exports = (fileName) => {
         config,
         logger,
         verifyToken, cacheTokenOwnerInfo, verifyPermission,
-        'errorCode': require(pathToRootFolder + 'utils/errorCodes.js')(fileName),
-        'translations': require(pathToRootFolder + 'utils/translations.js')(fileName),
+        'errorCode': require(global.appRoot + '/utils/errorCodes.js')(fileName),
+        'translations': require(global.appRoot + '/utils/translations.js')(fileName),
         express, router, bodyParser
     }
 };

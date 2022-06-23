@@ -1,3 +1,8 @@
+// Set root directory as a global variable
+var path = require('path');
+global.appRoot = path.resolve(__dirname);
+
+// Begin building app
 var express = require('express');
 var db = require('./utils/db');
 var app = express();

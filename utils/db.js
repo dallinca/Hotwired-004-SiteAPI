@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 const logger = require('./logger');
-const config = require('../config/config');
+const config = require(global.appRoot + '/config/config');
 mongoose.connect(config.database.address, function(error) {
   if (error) {
     logger.on('finish', function (info) {

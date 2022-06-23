@@ -1,6 +1,3 @@
-// Set Root Folder path -- CONTROLLER SPECIFIC 
-var pathToRootFolder = '../../../../';
-
 // Standard Utilities
 const {
   config,
@@ -9,7 +6,7 @@ const {
   errorCode, // nextErrorCode = '00040'; // Only used for keeping loose track of next ID assignment
   translations,
   router,
-} = require(pathToRootFolder + 'utils/standardUtils.js')(__filename);
+} = require(global.appRoot + '/utils/standardUtils.js')(__filename);
 
 // Prep Error Messages, Success Messages, Permission strings -- CONTROLLER SPECIFIC
 const {
@@ -52,13 +49,13 @@ const P = {
 }
 
 // Prep models -- CONTROLLER SPECIFIC
-var User = require(pathToRootFolder + 'mongoose_models/v1/admin/User');
-var Visitor = require(pathToRootFolder + 'mongoose_models/v1/admin/Visitor');
+var User = require(global.appRoot + '/mongoose_models/v1/admin/User');
+var Visitor = require(global.appRoot + '/mongoose_models/v1/admin/Visitor');
 
 // Prep Additional Libraries -- CONTROLLER SPECIFIC
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcryptjs');
-let { sendEmail } = require(pathToRootFolder + "utils/nodemailerTransport.js");
+let { sendEmail } = require(global.appRoot + "/utils/nodemailerTransport.js");
 
 // ==============================
 // ===== Helping Functions
