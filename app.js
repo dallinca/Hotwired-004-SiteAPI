@@ -27,8 +27,17 @@ var Site_ChatController = require('./api/v1/site/chat/ChatController');
 app.use('/api/v1/site/chat', Site_ChatController);
 
 // ADMIN
-var Admin_AuthController = require('./api/v1/admin/auth/AuthController');
-app.use('/api/v1/admin/auth', Admin_AuthController);
+//var Admin_AuthController = require('./api/v1/admin/auth/AuthController');
+//app.use('/api/v1/admin/auth', Admin_AuthController);
+
+var API_v1_Admin_User_UserController = require('./api/v1/admin/user/UserController');
+app.use('/api/v1/admin/user', API_v1_Admin_User_UserController);
+
+var API_v1_Admin_User_Auth_AuthController = require('./api/v1/admin/user/auth/AuthController');
+app.use('/api/v1/admin/user/auth', API_v1_Admin_User_Auth_AuthController);
+
+var API_v1_Admin_User_Email_EmailController = require('./api/v1/admin/user/email/EmailController');
+app.use('/api/v1/admin/user/email', API_v1_Admin_User_Email_EmailController);
 
 // API DOCS
 var ApiDocsContoller = require('./api/v1/apiDocs/ApiDocsController');
