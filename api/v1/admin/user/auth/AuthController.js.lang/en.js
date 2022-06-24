@@ -11,6 +11,7 @@ module.exports = {
     [NAMES.ERROR_EmailVerificationCode_Expired]: 'Email Verification Code is Expired. Please ask for an a new Email Verification Code.',
     [NAMES.ERROR_Login_InvalidCredentials]: 'Login Credentials were not correct, please try again.',
     [NAMES.ERROR_Name_AlreadyUsed]: 'Name already in use. Please use another name.',
+    [NAMES.ERROR_Name_NotValidCharacters]: 'Name must contain only capital letters, lowercase letters, numbers, or underscores',
     [NAMES.ERROR_Name_NotProvided]: 'Request Body must contain a name field.',
     [NAMES.ERROR_Password_NotProvided]: 'Request Body must contain a password field.',
     [NAMES.ERROR_Registration_InvalidCredentials]: 'Registration Credentials are incorrect, please review your email and email verification code.',

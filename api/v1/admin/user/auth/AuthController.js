@@ -3,7 +3,7 @@ const {
   config,
   logger,
   verifyToken, cacheTokenOwnerInfo, verifyPermission,
-  errorCode, // nextErrorCode = '00026'; // Only used for keeping loose track of next ID assignment
+  errorCode, // nextErrorCode = '00027'; // Only used for keeping loose track of next ID assignment
   translations,
   router,
 } = require(global.appRoot + '/utils/standardUtils.js')(__filename);
@@ -20,6 +20,7 @@ const {
   ERROR_EmailVerificationCode_Expired,
   ERROR_Login_InvalidCredentials,
   ERROR_Name_AlreadyUsed,
+  ERROR_Name_NotValidCharacters,
   ERROR_Name_NotProvided,
   ERROR_Password_NotProvided,
   ERROR_Registration_InvalidCredentials,
@@ -74,6 +75,14 @@ function verifyUniqueEmail(req, res, next) {
 
     next();
   });
+}
+
+function verifyValidName(req, res, next) {
+  if (/^[A-Za-z0-9_]*$/.test(req.body.name)) {
+    next();
+  } else {
+    return res.status(400).send({ auth: false, token: null, code: errorCode('00026'), message: translations(ERROR_Name_NotValidCharacters, res.locals.language) });
+  }
 }
 
 function verifyUniqueName(req, res, next) {
@@ -131,7 +140,7 @@ function verifyIsUser(req, res, next) {
 // ===== Routes
 // ==============================
 
-router.post('/register', [verifyRegisterInfoPresent, verifyUniqueEmail, verifyApprovedForAccount, verifyUniqueName, verifyEmailCode], function(req, res) {
+router.post('/register', [verifyRegisterInfoPresent, verifyUniqueEmail, verifyApprovedForAccount, verifyValidName, verifyUniqueName, verifyEmailCode], function(req, res) {
 
   var emailData = {
     from: config.email.from,

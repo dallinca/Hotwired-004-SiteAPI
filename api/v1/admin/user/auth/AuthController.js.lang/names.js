@@ -9,6 +9,7 @@ module.exports = {
     ERROR_EmailVerificationCode_Expired: 'ERROR_EmailVerificationCode_Expired',
     ERROR_Login_InvalidCredentials: 'ERROR_Login_InvalidCredentials',
     ERROR_Name_AlreadyUsed: 'ERROR_Name_AlreadyUsed',
+    ERROR_Name_NotValidCharacters: 'ERROR_Name_NotValidCharacters',
     ERROR_Name_NotProvided: 'ERROR_Name_NotProvided',
     ERROR_Password_NotProvided: 'ERROR_Password_NotProvided',
     ERROR_Registration_InvalidCredentials: 'ERROR_Registration_InvalidCredentials',
