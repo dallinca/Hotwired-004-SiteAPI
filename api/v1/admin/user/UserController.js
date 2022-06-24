@@ -3,7 +3,7 @@ const {
   config,
   logger,
   verifyToken, cacheTokenOwnerInfo, verifyPermission,
-  errorCode, // nextErrorCode = '00040'; // Only used for keeping loose track of next ID assignment
+  errorCode, // nextErrorCode = '00012'; // Only used for keeping loose track of next ID assignment
   translations,
   router,
 } = require(global.appRoot + '/utils/standardUtils.js')(__filename);
@@ -47,10 +47,10 @@ function verifyEmailPresent(req, res, next) {
 function verifyUniqueEmail(req, res, next) {
   User.findOne({ email: req.body.email }, function(err, user) {
     if (err) {
-      logger.error(`500 - ${errorCode('00006')} - ${err}`);
-      return res.status(500).send({ auth: false, token: null, token: null, code: errorCode('00006'), message: translations(ERROR_Server_Generic, res.locals.language) });
+      logger.error(`500 - ${errorCode('00002')} - ${err}`);
+      return res.status(500).send({ auth: false, token: null, token: null, code: errorCode('00002'), message: translations(ERROR_Server_Generic, res.locals.language) });
     }
-    if (user) return res.status(409).send({ auth: false, token: null, token: null, code: errorCode('00007'), message: translations(ERROR_Email_AlreadyUsed, res.locals.language) });
+    if (user) return res.status(409).send({ auth: false, token: null, token: null, code: errorCode('00003'), message: translations(ERROR_Email_AlreadyUsed, res.locals.language) });
 
     next();
   });
@@ -59,10 +59,10 @@ function verifyUniqueEmail(req, res, next) {
 function verifyIsVisitor(req, res, next) {
   Visitor.findOne({ email: req.body.email }, function(err, visitor) {
     if (err) {
-      logger.error(`500 - ${errorCode('00033')} - ${err}`);
-      return res.status(500).send({ auth: false, token: null, token: null, code: errorCode('00033'), message: translations(ERROR_Server_Generic, res.locals.language) });
+      logger.error(`500 - ${errorCode('00004')} - ${err}`);
+      return res.status(500).send({ auth: false, token: null, token: null, code: errorCode('00004'), message: translations(ERROR_Server_Generic, res.locals.language) });
     }
-    if (!visitor) return res.status(409).send({ auth: false, token: null, token: null, code: errorCode('00034'), message: translations(ERROR_Email_NotAUser, res.locals.language) });
+    if (!visitor) return res.status(409).send({ auth: false, token: null, token: null, code: errorCode('00005'), message: translations(ERROR_Email_NotAUser, res.locals.language) });
 
     next();
   });
@@ -71,18 +71,18 @@ function verifyIsVisitor(req, res, next) {
 function verifyIsNotVisitor(req, res, next) {
   Visitor.findOne({ email: req.body.email }, function(err, visitor) {
     if (err) {
-      logger.error(`500 - ${errorCode('00035')} - ${err}`);
-      return res.status(500).send({ auth: false, token: null, token: null, code: errorCode('00035'), message: translations(ERROR_Server_Generic, res.locals.language) });
+      logger.error(`500 - ${errorCode('00006')} - ${err}`);
+      return res.status(500).send({ auth: false, token: null, token: null, code: errorCode('00006'), message: translations(ERROR_Server_Generic, res.locals.language) });
     }
-    if (visitor) return res.status(409).send({ auth: false, token: null, token: null, code: errorCode('00036'), message: translations(ERROR_Email_AlreadyUsed, res.locals.language) });
+    if (visitor) return res.status(409).send({ auth: false, token: null, token: null, code: errorCode('00007'), message: translations(ERROR_Email_AlreadyUsed, res.locals.language) });
 
     next();
   });
 }
 
 function verifyApproveUserInfoPresent(req, res, next) {
-  if (!req.body.email) return res.status(400).send({ auth: false, token: null, code: errorCode('00037'), message: translations(ERROR_Email_NotProvided, res.locals.language) });
-  if (!req.body.approveUser) return res.status(400).send({ auth: false, token: null, code: errorCode('00038'), message: translations(ERROR_User_Approval_NotProvided, res.locals.language) });
+  if (!req.body.email) return res.status(400).send({ auth: false, token: null, code: errorCode('00008'), message: translations(ERROR_Email_NotProvided, res.locals.language) });
+  if (!req.body.approveUser) return res.status(400).send({ auth: false, token: null, code: errorCode('00009'), message: translations(ERROR_User_Approval_NotProvided, res.locals.language) });
   next();
 }
 
@@ -108,8 +108,8 @@ router.post('/addUser', [verifyToken, cacheTokenOwnerInfo, verifyPermission(P.P_
     'approvedForAccount': false
   }, function(err, visitor) {
     if (err || !visitor) {
-      logger.error(`500 - ${errorCode('00032')} - ${err}`);
-      return res.status(500).send({ auth: false, token: null, token: null, code: errorCode('00032'), message: translations(ERROR_Server_Generic, res.locals.language) });
+      logger.error(`500 - ${errorCode('00010')} - ${err}`);
+      return res.status(500).send({ auth: false, token: null, token: null, code: errorCode('00010'), message: translations(ERROR_Server_Generic, res.locals.language) });
     } else {
       sendEmail(emailData);
       return res.status(200).send({ auth: false, token: null, message: translations(SUCCESS_User_Added, res.locals.language) });
@@ -129,8 +129,8 @@ router.post('/approveUser', [verifyToken, cacheTokenOwnerInfo, verifyPermission(
   
   Visitor.findOneAndUpdate({ email: req.body.email }, { 'approvedForAccount': req.body.approveUser }, { useFindAndModify: false }, function(err, visitor){
     if (err || !visitor) {
-      logger.error(`500 - ${errorCode('00039')} - ${err}`);
-      return res.status(500).send({ auth: false, token: null, code: errorCode('00039'), message: translations(ERROR_Server_Generic, res.locals.language) });
+      logger.error(`500 - ${errorCode('00011')} - ${err}`);
+      return res.status(500).send({ auth: false, token: null, code: errorCode('00011'), message: translations(ERROR_Server_Generic, res.locals.language) });
     } else {
       sendEmail(emailData);
       return res.status(200).send({ auth: false, token: null, message: translations(SUCCESS_User_ApprovalUpdated, res.locals.language) });

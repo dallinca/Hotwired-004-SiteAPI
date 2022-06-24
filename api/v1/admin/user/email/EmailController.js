@@ -3,7 +3,7 @@ const {
   config,
   logger,
   verifyToken, cacheTokenOwnerInfo, verifyPermission,
-  errorCode, // nextErrorCode = '00040'; // Only used for keeping loose track of next ID assignment
+  errorCode, // nextErrorCode = '00006'; // Only used for keeping loose track of next ID assignment
   translations,
   router,
 } = require(global.appRoot + '/utils/standardUtils.js')(__filename);
@@ -43,10 +43,10 @@ function verifyEmailPresent(req, res, next) {
 function verifyIsVisitor(req, res, next) {
   Visitor.findOne({ email: req.body.email }, function(err, visitor) {
     if (err) {
-      logger.error(`500 - ${errorCode('00033')} - ${err}`);
-      return res.status(500).send({ auth: false, token: null, token: null, code: errorCode('00033'), message: translations(ERROR_Server_Generic, res.locals.language) });
+      logger.error(`500 - ${errorCode('00002')} - ${err}`);
+      return res.status(500).send({ auth: false, token: null, token: null, code: errorCode('00002'), message: translations(ERROR_Server_Generic, res.locals.language) });
     }
-    if (!visitor) return res.status(409).send({ auth: false, token: null, token: null, code: errorCode('00034'), message: translations(ERROR_Email_NotAUser, res.locals.language) });
+    if (!visitor) return res.status(409).send({ auth: false, token: null, token: null, code: errorCode('00003'), message: translations(ERROR_Email_NotAUser, res.locals.language) });
 
     next();
   });
@@ -72,8 +72,8 @@ router.post('/sendEmailVerificationCode', [verifyToken, cacheTokenOwnerInfo, ver
   // Find the entry if it exists
   Visitor.findOne({ email: req.body.email }, function(err, visitor) {
     if (err) {
-      logger.error(`500 - ${errorCode('00013')} - ${err}`);
-      return res.status(500).send({ auth: false, token: null, code: errorCode('00013'), message: translations(ERROR_Server_Generic, res.locals.language) });
+      logger.error(`500 - ${errorCode('00004')} - ${err}`);
+      return res.status(500).send({ auth: false, token: null, code: errorCode('00004'), message: translations(ERROR_Server_Generic, res.locals.language) });
     }
     if (visitor && visitor.codeExpirationTime > NOW) {
       // Need to wait for code to expire before sending a new one
@@ -82,8 +82,8 @@ router.post('/sendEmailVerificationCode', [verifyToken, cacheTokenOwnerInfo, ver
       // Create a new code for an OLD visitor
       Visitor.findOneAndUpdate({ email: req.body.email }, { 'emailVerificationCode': emailVerificationCode, 'codeExpirationTime': codeExpirationTime }, { useFindAndModify: false }, function(err, visitor){
         if (err || !visitor) {
-          logger.error(`500 - ${errorCode('00014')} - ${err}`);
-          return res.status(500).send({ auth: false, token: null, code: errorCode('00014'), message: translations(ERROR_Server_Generic, res.locals.language) });
+          logger.error(`500 - ${errorCode('00005')} - ${err}`);
+          return res.status(500).send({ auth: false, token: null, code: errorCode('00005'), message: translations(ERROR_Server_Generic, res.locals.language) });
         } else {
           sendEmail(emailData);
           return res.status(200).send({ auth: false, token: null, message: translations(SUCCESS_EmailVerificationCode_Sent, res.locals.language) });
