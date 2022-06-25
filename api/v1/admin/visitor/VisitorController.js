@@ -16,10 +16,6 @@ const {
   ERROR_Email_NotProvided,
   ERROR_Visitor_Approval_NotProvided,
   ERROR_VisitorsDoNotExist,
-  ERROR_QueryParam_Page_NotProvided,
-  ERROR_QueryParam_Limit_NotProvided,
-  ERROR_QueryParam_Page_BadInput,
-  ERROR_QueryParam_Limit_BadInput,
 
   SUCCESS_Visitor_Added,
   SUCCESS_Visitor_ApprovalUpdated,
@@ -38,8 +34,8 @@ var User = require(global.appRoot + '/mongoose_models/v1/admin/User');
 var Visitor = require(global.appRoot + '/mongoose_models/v1/admin/Visitor');
 
 // Prep Additional Libraries -- CONTROLLER SPECIFIC
-let { sendEmail } = require(global.appRoot + "/utils/nodemailerTransport.js");
-
+let { sendEmail } = require(global.appRoot + '/utils/nodemailerTransport.js');
+let { verifyPaginationParameters } = require(global.appRoot + '/utils/pagination.js');
 
 // ==============================
 // ===== Helping Functions -- Info Presence
@@ -98,25 +94,6 @@ function verifyIsNotVisitor(req, res, next) {
   });
 }
 
-function verifyPaginationParameters(req, res ,next) {
-  if (!req.query.page) {
-    return res.status(400).send({ auth: true, token: null, code: errorCode('00014'), message: translations(ERROR_QueryParam_Page_NotProvided, res.locals.language) });
-  }
-  if (!req.query.limit) {
-    return res.status(400).send({ auth: true, token: null, code: errorCode('00015'), message: translations(ERROR_QueryParam_Limit_NotProvided, res.locals.language) });
-  }
-  let qPage = parseInt(req.query.page);
-  let qLimit = parseInt(req.query.limit);
-  if (isNaN(qPage) || qPage < 1) {
-    return res.status(400).send({ auth: true, token: null, code: errorCode('00016'), message: translations(ERROR_QueryParam_Page_BadInput, res.locals.language) });
-  }
-  if (isNaN(qLimit)) {
-    return res.status(400).send({ auth: true, token: null, code: errorCode('00017'), message: translations(ERROR_QueryParam_Limit_BadInput, res.locals.language) });
-  }
-  next();
-}
-
-
 // ==============================
 // ===== Routes
 // ==============================
@@ -169,11 +146,7 @@ router.post('/approve', [verifyToken, cacheTokenOwnerInfo, verifyPermission(P.P_
 
 
 router.get('/all', [verifyToken, cacheTokenOwnerInfo, verifyPermission(P.P_Admin_Visitor_ViewAll), verifyPaginationParameters], function(req, res, next) {
-  let qPage = parseInt(req.query.page);
-  let qLimit = parseInt(req.query.limit);
-  let qSkip = (qPage - 1) * qLimit;
-
-  Visitor.find({}, { emailVerificationCode: 0, _id: 0, __v: 0 }, { skip:parseInt(qSkip), limit:parseInt(qLimit), sort:'name' }, function(err, visitors) {
+  Visitor.find({}, { emailVerificationCode: 0, _id: 0, __v: 0 }, { skip:parseInt(req.query.skip), limit:parseInt(req.query.limit), sort:'name' }, function(err, visitors) {
     if (!visitors) {
       return res.status(500).send({ auth: false, token: null, code: errorCode('00012'), message: translations(ERROR_VisitorsDoNotExist, res.locals.language) });
     } else if (err) {

@@ -5,10 +5,6 @@ module.exports = {
     ERROR_Email_NotProvided: 'ERROR_Email_NotProvided',
     ERROR_Visitor_Approval_NotProvided: 'ERROR_Visitor_Approval_NotProvided',
     ERROR_VisitorsDoNotExist: 'ERROR_VisitorsDoNotExist',
-    ERROR_QueryParam_Page_NotProvided: 'ERROR_QueryParam_Page_NotProvided',
-    ERROR_QueryParam_Limit_NotProvided: 'ERROR_QueryParam_Limit_NotProvided',
-    ERROR_QueryParam_Page_BadInput: 'ERROR_QueryParam_Page_BadInput',
-    ERROR_QueryParam_Limit_BadInput: 'ERROR_QueryParam_Limit_BadInput',
 
     SUCCESS_Visitor_Added: 'SUCCESS_Visitor_Added',
     SUCCESS_Visitor_ApprovalUpdated: 'SUCCESS_Visitor_ApprovalUpdated',

@@ -1,3 +1,4 @@
+// Next ErrorCode - 00009
 const errorCodes = {
     '/api/v1/site/auth/AuthController.js': '00001-',
 
@@ -9,8 +10,10 @@ const errorCodes = {
     '/api/v1/admin/visitor/VisitorController.js': '00005-',
     '/api/v1/admin/user/auth/AuthController.js': '00006-',
     '/api/v1/admin/user/email/EmailController.js': '00007-',
-};
 
+    // Utilities
+    '/utils/pagination.js': '00008-',
+};
 
 function GetErrorCodeBase(fileName) {
     var relativeFileName = fileName.replace(process.env.PWD,'');
