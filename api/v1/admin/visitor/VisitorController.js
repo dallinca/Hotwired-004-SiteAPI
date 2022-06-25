@@ -158,5 +158,4 @@ router.get('/all', [verifyToken, cacheTokenOwnerInfo, verifyPermission(P.P_Admin
   })
 })
 
-
 module.exports = router;
