@@ -6,8 +6,9 @@ const errorCodes = {
     '/api/v1/apiDocs/ApiDocsController.js': '00003-',
 
     '/api/v1/admin/user/UserController.js': '00004-',
-    '/api/v1/admin/user/auth/AuthController.js': '00005-',
-    '/api/v1/admin/user/email/EmailController.js': '00006-',
+    '/api/v1/admin/visitor/VisitorController.js': '00005-',
+    '/api/v1/admin/user/auth/AuthController.js': '00006-',
+    '/api/v1/admin/user/email/EmailController.js': '00007-',
 };
 
 
