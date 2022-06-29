@@ -3,7 +3,7 @@ const {
     config,
     logger,
     verifyToken, cacheTokenOwnerInfo, verifyPermission,
-    errorCode, // nextErrorCode = '00014'; // Only used for keeping loose track of next ID assignment
+    errorCode, // nextErrorCode = '00015'; // Only used for keeping loose track of next ID assignment
     translations,
     router,
 } = require(global.appRoot + '/utils/standardUtils.js')(__filename);
@@ -146,15 +146,22 @@ router.post('/approve', [verifyToken, cacheTokenOwnerInfo, verifyPermission(P.P_
 
 
 router.get('/all', [verifyToken, cacheTokenOwnerInfo, verifyPermission(P.P_Admin_Visitor_ViewAll), verifyPaginationParameters], function(req, res, next) {
-  Visitor.find({}, { emailVerificationCode: 0, _id: 0, __v: 0 }, { skip:parseInt(req.query.skip), limit:parseInt(req.query.limit), sort:'name' }, function(err, visitors) {
-    if (!visitors) {
-      return res.status(500).send({ auth: false, token: null, code: errorCode('00012'), message: translations(ERROR_VisitorsDoNotExist, res.locals.language) });
-    } else if (err) {
-      logger.error(`500 - ${errorCode('00013')} - ${err}`);
-      return res.status(500).send({ auth: false, token: null, code: errorCode('00013'), message: translations(ERROR_Server_Generic, res.locals.language) });
-    } else {
-      return res.status(200).send({ auth: true, token: null, message: translations(SUCCESS_Visitor_DataProvided, res.locals.language), 'data': { 'visitors': visitors } });
+  Visitor.countDocuments({}, function(err, count) {
+    if (err) {
+      logger.error(`500 - ${errorCode('00014')} - ${err}`);
+      return res.status(500).send({ auth: false, token: null, code: errorCode('00014'), message: translations(ERROR_Server_Generic, res.locals.language) });
     }
+  
+    Visitor.find({}, { emailVerificationCode: 0, _id: 0, __v: 0 }, { skip:parseInt(req.query.skip), limit:parseInt(req.query.limit), sort:'name' }, function(err, visitors) {
+      if (!visitors) {
+        return res.status(500).send({ auth: false, token: null, code: errorCode('00012'), message: translations(ERROR_VisitorsDoNotExist, res.locals.language) });
+      } else if (err) {
+        logger.error(`500 - ${errorCode('00013')} - ${err}`);
+        return res.status(500).send({ auth: false, token: null, code: errorCode('00013'), message: translations(ERROR_Server_Generic, res.locals.language) });
+      } else {
+        return res.status(200).send({ auth: true, token: null, message: translations(SUCCESS_Visitor_DataProvided, res.locals.language), 'data': { 'count': count, 'visitors': visitors } });
+      }
+    })
   })
 })
 
