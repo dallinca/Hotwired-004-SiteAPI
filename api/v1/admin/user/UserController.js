@@ -54,7 +54,6 @@ router.get('/all', [verifyToken, cacheTokenOwnerInfo, verifyPermission(P.P_Admin
       logger.error(`500 - ${errorCode('00009')} - ${err}`);
       return res.status(500).send({ auth: false, token: null, code: errorCode('00009'), message: translations(ERROR_Server_Generic, res.locals.language) });
     }
-    console.log("count: " + count)
     User.find({}, { password: 0, _id: 0, __v: 0 }, { skip:parseInt(req.query.skip), limit:parseInt(req.query.limit), sort:'name' }, function(err, users) {
       if (!users) {
         return res.status(500).send({ auth: false, token: null, code: errorCode('00005'), message: translations(ERROR_UsersDoNotExit, res.locals.language) });
