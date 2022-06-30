@@ -159,7 +159,7 @@ router.get('/all', [verifyToken, cacheTokenOwnerInfo, verifyPermission(P.P_Admin
         logger.error(`500 - ${errorCode('00013')} - ${err}`);
         return res.status(500).send({ auth: false, token: null, code: errorCode('00013'), message: translations(ERROR_Server_Generic, res.locals.language) });
       } else {
-        return res.status(200).send({ auth: true, token: null, message: translations(SUCCESS_Visitor_DataProvided, res.locals.language), 'data': { 'count': count, 'visitors': visitors } });
+        return res.status(200).send({ auth: true, token: null, message: translations(SUCCESS_Visitor_DataProvided, res.locals.language), 'data': { 'count': count, 'items': visitors } });
       }
     })
   })
