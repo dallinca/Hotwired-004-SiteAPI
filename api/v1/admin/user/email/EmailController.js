@@ -86,7 +86,7 @@ router.post('/sendEmailVerificationCode', [verifyToken, cacheTokenOwnerInfo, ver
           return res.status(500).send({ auth: false, token: null, code: errorCode('00005'), message: translations(ERROR_Server_Generic, res.locals.language) });
         } else {
           sendEmail(emailData);
-          return res.status(200).send({ auth: false, token: null, message: translations(SUCCESS_EmailVerificationCode_Sent, res.locals.language) });
+          return res.status(200).send({ auth: true, token: null, message: translations(SUCCESS_EmailVerificationCode_Sent, res.locals.language) });
         }
       });
     }
