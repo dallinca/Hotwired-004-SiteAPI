@@ -50,18 +50,4 @@ function cacheTokenOwnerInfo(req, res, next) {
   });
 }
 
-/*function verifyPermission(permission) {
-  return verifyPermission[permission] || (verifyPermission[permission] = function(req, res, next) {
-    if (!res.locals.tokenOwnerInfo.permissions.includes(permission)) return res.status(403).send({ auth: false, token: null, token: null, message: 'Insufficient permissions' }); 
-    next();
-  })
-}*/
-
-function verifyPermission(permission) {
-  return function(req, res, next) {
-    if (!res.locals.tokenOwnerInfo.permissions.includes(permission)) return res.status(403).send({ auth: false, token: null, token: null, message: 'Insufficient permissions' }); 
-    next();
-  }
-}
-
-module.exports = { verifyToken, cacheTokenOwnerInfo, verifyPermission };
+module.exports = { verifyToken, cacheTokenOwnerInfo };

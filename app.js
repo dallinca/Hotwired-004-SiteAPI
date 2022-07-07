@@ -39,6 +39,9 @@ app.use('/api/v1/admin/visitor', API_v1_Admin_Visitor_VisitorController);
 var API_v1_Admin_User_Auth_AuthController = require('./api/v1/admin/user/auth/AuthController');
 app.use('/api/v1/admin/user/auth', API_v1_Admin_User_Auth_AuthController);
 
+var API_v1_Admin_User_Permissions_PermissionsController = require('./api/v1/admin/user/permissions/PermissionsController');
+app.use('/api/v1/admin/user/permissions', API_v1_Admin_User_Permissions_PermissionsController);
+
 var API_v1_Admin_User_Email_EmailController = require('./api/v1/admin/user/email/EmailController');
 app.use('/api/v1/admin/user/email', API_v1_Admin_User_Email_EmailController);
 

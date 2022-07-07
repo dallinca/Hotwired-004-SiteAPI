@@ -29,10 +29,10 @@ const {
   SUCCESS_Registration_Completed,
   SUCCESS_Token_Authenticated,
   SUCCESS_User_PasswordReset
-} = require(__filename + '.lang/names.js');
-const P = {
-  P_Admin_User_Example: 'P_Admin_User_Example'
-}
+} = require(__filename + '.meta/languages/names.js');
+const {
+  /*P_Admin_User_Example*/
+} = require(__filename + '.meta/permissions/names.js');
 
 // Prep models -- CONTROLLER SPECIFIC
 var User = require(global.appRoot + '/mongoose_models/v1/admin/User');

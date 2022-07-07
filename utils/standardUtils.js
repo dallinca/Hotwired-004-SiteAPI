@@ -3,7 +3,9 @@ const config = require(global.appRoot + '/config/config');
 
 // Standard Requires -- ALL CONTROLLERS
 const logger = require(global.appRoot + '/utils/logger');
-const { verifyToken, cacheTokenOwnerInfo, verifyPermission } = require(global.appRoot + '/utils/VerifyToken');
+const { verifyToken, cacheTokenOwnerInfo } = require(global.appRoot + '/utils/VerifyToken');
+const { verifyPermission, initControllerPermissions } = require(global.appRoot + '/utils/permissions');
+
 
 module.exports = (fileName) => {
 
@@ -13,6 +15,7 @@ module.exports = (fileName) => {
     var bodyParser = require('body-parser');
     router.use(bodyParser.urlencoded({ extended: false }));
     router.use(bodyParser.json());
+    initControllerPermissions(fileName);
 
     return {
         config,

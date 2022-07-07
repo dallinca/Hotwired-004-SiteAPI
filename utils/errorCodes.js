@@ -9,7 +9,8 @@ const errorCodes = {
     '/api/v1/admin/user/UserController.js': '00004-',
     '/api/v1/admin/visitor/VisitorController.js': '00005-',
     '/api/v1/admin/user/auth/AuthController.js': '00006-',
-    '/api/v1/admin/user/email/EmailController.js': '00007-',
+    '/api/v1/admin/user/permissions/PermissionsController.js': '00007-',
+    '/api/v1/admin/user/email/EmailController.js': '00008-',
 
     // Utilities
     '/utils/pagination.js': '00008-',

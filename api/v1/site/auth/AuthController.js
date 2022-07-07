@@ -29,7 +29,9 @@ const {
   SUCCESS_Token_Authenticated,
   SUCCESS_User_DataProvided,
   SUCCESS_User_PasswordReset
-} = require(__filename + '.lang/names.js');
+} = require(__filename + '.meta/languages/names.js');
+const {
+} = require(__filename + '.meta/permissions/names.js');
 
 // Prep models
 var User = require(global.appRoot + '/mongoose_models/v1/site/User');

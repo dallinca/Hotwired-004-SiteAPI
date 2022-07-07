@@ -15,12 +15,12 @@ const {
   ERROR_UsersDoNotExit,
 
   SUCCESS_User_DataProvided
-} = require(__filename + '.lang/names.js');
-const P = {
-  P_Admin_User_Remove: 'P_Admin_User_Remove',
-  P_Admin_User_ViewOne: 'P_Admin_User_ViewOne',
-  P_Admin_User_ViewAll: 'P_Admin_User_ViewAll'
-}
+} = require(__filename + '.meta/languages/names.js');
+const {
+  P_Admin_User_Remove,
+  P_Admin_User_ViewOne,
+  P_Admin_User_ViewAll
+} = require(__filename + '.meta/permissions/names.js');
 
 // Prep models -- CONTROLLER SPECIFIC
 var User = require(global.appRoot + '/mongoose_models/v1/admin/User');
@@ -48,7 +48,7 @@ router.get('/me', [verifyToken, cacheTokenOwnerInfo], function(req, res, next) {
   res.status(200).send({ auth: true, token: null, message: translations(SUCCESS_User_DataProvided, res.locals.language), 'data': { 'user': res.locals.tokenOwnerInfo } });
 });
 
-router.get('/all', [verifyToken, cacheTokenOwnerInfo, verifyPermission(P.P_Admin_User_ViewAll), verifyPaginationParameters], function(req, res, next) {
+router.get('/all', [verifyToken, cacheTokenOwnerInfo, verifyPermission(P_Admin_User_ViewAll), verifyPaginationParameters], function(req, res, next) {
   User.countDocuments({}, function(err, count) {
     if (err) {
       logger.error(`500 - ${errorCode('00009')} - ${err}`);
@@ -67,7 +67,7 @@ router.get('/all', [verifyToken, cacheTokenOwnerInfo, verifyPermission(P.P_Admin
   });
 })
 
-router.get('/_:userId', [verifyToken, cacheTokenOwnerInfo, verifyPermission(P.P_Admin_User_ViewOne)], function(req, res, next) {
+router.get('/_:userId', [verifyToken, cacheTokenOwnerInfo, verifyPermission(P_Admin_User_ViewOne)], function(req, res, next) {
   User.findOne({ name: req.params.userId }, { password: 0, _id: 0, __v: 0 }, function(err, user) {
     if (!user) {
       return res.status(500).send({ auth: false, token: null, code: errorCode('00007'), message: translations(ERROR_Name_DoesNotExit, res.locals.language) });

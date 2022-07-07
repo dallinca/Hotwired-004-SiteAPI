@@ -9,6 +9,10 @@ const {
 } = require(global.appRoot + '/utils/standardUtils.js')(__filename);
 
 // Prep Error Messages, Success Messages, Permission strings -- CONTROLLER SPECIFIC
+const {
+} = require(__filename + '.meta/languages/names.js');
+const {
+} = require(__filename + '.meta/permissions/names.js');
 
 // Prep models -- CONTROLLER SPECIFIC
 var ApiDoc = require(global.appRoot + '/mongoose_models/v1/ApiDoc.js');

@@ -39,7 +39,7 @@ function getLanguages(originFilePath) {
         console.log("Must supply filePath of file using translations. Pass __filename, to the function returned by require.");
         return null;
     }
-    langsFolderPath = originFilePath + '.lang/';
+    langsFolderPath = originFilePath + '.meta/languages/';
 
     // Get current languages supported for this file
     langs = require(langsFolderPath + 'langs.js');

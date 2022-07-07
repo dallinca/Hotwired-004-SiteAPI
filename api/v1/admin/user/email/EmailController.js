@@ -16,11 +16,11 @@ const {
   ERROR_EmailVerificationCode_AlreadySent,
 
   SUCCESS_EmailVerificationCode_Sent
-} = require(__filename + '.lang/names.js');
-const P = {
-  P_Admin_User_Email_VerificationCode_SendOwn: 'P_Admin_User_Email_VerificationCode_SendOwn',
-  P_Admin_User_Email_VerificationCode_SendOther: 'P_Admin_User_Email_VerificationCode_SendOther'
-}
+} = require(__filename + '.meta/languages/names.js');
+const {
+  P_Admin_User_Email_VerificationCode_SendOwn,
+  P_Admin_User_Email_VerificationCode_SendOther
+} = require(__filename + '.meta/permissions/names.js');
 
 // Prep models -- CONTROLLER SPECIFIC
 var Visitor = require(global.appRoot + '/mongoose_models/v1/admin/Visitor');
@@ -54,7 +54,7 @@ function verifyIsVisitor(req, res, next) {
 // ==============================
 // ===== Routes
 // ==============================
-router.post('/sendOwnEmailVerificationCode', [verifyToken, cacheTokenOwnerInfo, verifyPermission(P.P_Admin_User_Email_VerificationCode_SendOwn)], function(req, res) {
+router.post('/sendOwnEmailVerificationCode', [verifyToken, cacheTokenOwnerInfo, verifyPermission(P_Admin_User_Email_VerificationCode_SendOwn)], function(req, res) {
   var toEmail = res.locals.tokenOwnerInfo.email;
   
   // Generate code
@@ -93,7 +93,7 @@ router.post('/sendOwnEmailVerificationCode', [verifyToken, cacheTokenOwnerInfo, 
   });  
 });
 
-router.post('/sendOtherEmailVerificationCode', [verifyToken, cacheTokenOwnerInfo, verifyPermission(P.P_Admin_User_Email_VerificationCode_SendOther), verifyEmailPresent, verifyIsVisitor], function(req, res) {
+router.post('/sendOtherEmailVerificationCode', [verifyToken, cacheTokenOwnerInfo, verifyPermission(P_Admin_User_Email_VerificationCode_SendOther), verifyEmailPresent, verifyIsVisitor], function(req, res) {
   // Generate code
   let NOW = Date.now();
   var emailVerificationCode = Math.floor(100000 + Math.random() * 900000);

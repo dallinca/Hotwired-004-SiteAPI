@@ -20,14 +20,14 @@ const {
   SUCCESS_Visitor_Added,
   SUCCESS_Visitor_ApprovalUpdated,
   SUCCESS_Visitor_DataProvided
-} = require(__filename + '.lang/names.js');
-const P = {
-  P_Admin_Visitor_Add: 'P_Admin_Visitor_Add',
-  P_Admin_Visitor_Remove: 'P_Admin_Visitor_Remove',
-  P_Admin_Visitor_Approve: 'P_Admin_Visitor_Approve',
-  P_Admin_Visitor_ViewOne: 'P_Admin_Visitor_ViewOne',
-  P_Admin_Visitor_ViewAll: 'P_Admin_Visitor_ViewAll'
-}
+} = require(__filename + '.meta/languages/names.js');
+const {
+  P_Admin_Visitor_Add,
+  P_Admin_Visitor_Remove,
+  P_Admin_Visitor_Approve,
+  P_Admin_Visitor_ViewOne,
+  P_Admin_Visitor_ViewAll
+} = require(__filename + '.meta/permissions/names.js');
 
 // Prep models -- CONTROLLER SPECIFIC
 var User = require(global.appRoot + '/mongoose_models/v1/admin/User');
@@ -97,7 +97,7 @@ function verifyIsNotVisitor(req, res, next) {
 // ==============================
 // ===== Routes
 // ==============================
-router.post('/add', [verifyToken, cacheTokenOwnerInfo, verifyPermission(P.P_Admin_Visitor_Add), verifyEmailPresent, verifyIsNotUser, verifyIsNotVisitor], function(req, res) {
+router.post('/add', [verifyToken, cacheTokenOwnerInfo, verifyPermission(P_Admin_Visitor_Add), verifyEmailPresent, verifyIsNotUser, verifyIsNotVisitor], function(req, res) {
   
   var emailData = {
     from: config.email.from,
@@ -123,7 +123,7 @@ router.post('/add', [verifyToken, cacheTokenOwnerInfo, verifyPermission(P.P_Admi
   });
 })
   
-router.post('/approve', [verifyToken, cacheTokenOwnerInfo, verifyPermission(P.P_Admin_Visitor_Approve), verifyApproveVisitorInfoPresent, verifyIsNotUser, verifyIsVisitor], function(req, res) {
+router.post('/approve', [verifyToken, cacheTokenOwnerInfo, verifyPermission(P_Admin_Visitor_Approve), verifyApproveVisitorInfoPresent, verifyIsNotUser, verifyIsVisitor], function(req, res) {
     
   var emailData = {
     from: config.email.from,
@@ -145,7 +145,7 @@ router.post('/approve', [verifyToken, cacheTokenOwnerInfo, verifyPermission(P.P_
 })
 
 
-router.get('/all', [verifyToken, cacheTokenOwnerInfo, verifyPermission(P.P_Admin_Visitor_ViewAll), verifyPaginationParameters], function(req, res, next) {
+router.get('/all', [verifyToken, cacheTokenOwnerInfo, verifyPermission(P_Admin_Visitor_ViewAll), verifyPaginationParameters], function(req, res, next) {
   Visitor.countDocuments({}, function(err, count) {
     if (err) {
       logger.error(`500 - ${errorCode('00014')} - ${err}`);

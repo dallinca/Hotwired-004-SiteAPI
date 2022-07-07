@@ -12,7 +12,7 @@ const {
   ERROR_QueryParam_Limit_NotProvided,
   ERROR_QueryParam_Page_BadInput,
   ERROR_QueryParam_Limit_BadInput
-} = require(__filename + '.lang/names.js');
+} = require(__filename + '.meta/languages/names.js');
 
 // ==============================
 // ===== Helping Functions
