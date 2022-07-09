@@ -156,7 +156,7 @@ router.post('/register', [verifyRegisterInfoPresent, verifyUniqueEmail, verifyAp
     name : req.body.name,
     email : req.body.email,
     password : hashedPassword,
-    permissions : [P.P_Admin_User_Email_VerificationCode_SendOwn]
+    permissions : []
   },
   function (err, user) {
     if (err || !user) {
