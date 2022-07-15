@@ -33,6 +33,9 @@ app.use('/api/v1/site/chat', Site_ChatController);
 var API_v1_Admin_User_UserController = require('./api/v1/admin/user/UserController');
 app.use('/api/v1/admin/user', API_v1_Admin_User_UserController);
 
+var API_v1_Admin_SiteUser_SiteUserController = require('./api/v1/admin/siteUser/SiteUserController');
+app.use('/api/v1/admin/siteUser', API_v1_Admin_SiteUser_SiteUserController);
+
 var API_v1_Admin_Visitor_VisitorController = require('./api/v1/admin/visitor/VisitorController');
 app.use('/api/v1/admin/visitor', API_v1_Admin_Visitor_VisitorController);
 
