@@ -36,7 +36,7 @@ let { verifyPaginationParameters } = require(global.appRoot + '/utils/pagination
 // ==============================
 
 function verifyPromoteAsGameDevInfoPresent(req, res, next) {
-  if (!req.body.email || !(typeof req.body.email === 'string')) return res.status(400).send({ auth: false, token: null, code: errorCode('00004'), message: translations(ERROR_SiteUser_Email_NotProvided, res.locals.language) });
+  if (!req.body.email) return res.status(400).send({ auth: false, token: null, code: errorCode('00004'), message: translations(ERROR_SiteUser_Email_NotProvided, res.locals.language) });
   if (!req.body.newValue) return res.status(400).send({ auth: false, token: null, code: errorCode('00005'), message: translations(ERROR_SiteUser_NewValueBoolean_NotProvided, res.locals.language) });
 
   next();
