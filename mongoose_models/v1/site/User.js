@@ -7,6 +7,7 @@ var SiteUserSchema = new mongoose.Schema({
   hostMax: { type: Number, default: 0 },
   guestMax: { type: Number, default: 0 },
   isGameDev: { type: Boolean, default: false },
+  gameStudioId: String,
   subscriptionPaid: {},
   subscriptionFree: {
     active: Boolean,
