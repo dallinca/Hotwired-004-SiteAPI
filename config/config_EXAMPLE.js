@@ -1,6 +1,13 @@
 // config.js
 module.exports = {
   'secret': 'supersecret',
+  'init': {
+    'rootaccount': {
+      'email': 'rootuseremail@gmail.com',
+      'name': 'rootuser',
+      'password': 'changeme'
+    }
+  },
   'auth': {
     'jwt': {
       'tokenValidTimeSeconds': 86400
@@ -17,6 +24,6 @@ module.exports = {
     'scope':'https://mail.google.com/'
   },
   'database': {
-    'address': 'mongodb://localhost:27017/testing'
+    'address': 'mongodb://localhost:27017/hw'
   }
 };

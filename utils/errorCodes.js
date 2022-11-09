@@ -1,5 +1,7 @@
 // Next ErrorCode - 00009
 const errorCodes = {
+    '/api/v1/admin/InitController.js': '00000-',
+
     '/api/v1/site/auth/AuthController.js': '00001-',
 
     '/api/v1/site/chat/ChatController.js': '00002-',

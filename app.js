@@ -27,6 +27,9 @@ var Site_ChatController = require('./api/v1/site/chat/ChatController');
 app.use('/api/v1/site/chat', Site_ChatController);
 
 // ADMIN
+var API_v1_Admin_InitController = require('./api/v1/admin/InitController');
+app.use('/api/v1/admin/init', API_v1_Admin_InitController);
+
 //var Admin_AuthController = require('./api/v1/admin/auth/AuthController');
 //app.use('/api/v1/admin/auth', Admin_AuthController);
 

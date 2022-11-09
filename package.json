@@ -1,11 +1,12 @@
 {
-  "name": "node-server-playground",
+  "name": "hotwired-site-api",
   "version": "1.0.0",
-  "description": "",
+  "description": "API functionality for Hotwired site and admin",
   "main": "app.js",
   "scripts": {
-    "start": "node server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js &",
+    "init": "curl http://127.0.0.1:3000/api/v1/admin/init",
+    "serve": "nohup node server.js > logs/consoleoutput.log &"
   },
   "author": "",
   "license": "ISC",
