@@ -12,7 +12,7 @@ Default db address is "mongodb://localhost:27017/hw". Note this can be updated a
 1. Run Commands:
 
 ```
-sudo apt install npm
+sudo apt-get install npm
 npm install  
 cp config/config_EXAMPLE.js config/config.js  
 ``` 
@@ -21,8 +21,6 @@ cp config/config_EXAMPLE.js config/config.js
   - "secret" should be updated to an safe kept value (used for JWT encryption)
   - "email" object values should be updated to valid gmail api values (used to enable emails for account management features)
   - "init.rootaccount" should be set to the desired root account information to initialize. Changing the password after initialization is recommended for security.
-
-3. Edit File config/configIpPort.js
   - "ipv4" array should be updated to include the ipv4 address of the server. localhost (127.0.0.1) is included by default.
 
 ## Run Server
