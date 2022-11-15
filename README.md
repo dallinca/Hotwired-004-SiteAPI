@@ -9,10 +9,13 @@ Default db address is "mongodb://localhost:27017/hw". Note this can be updated a
 
 ## Setup
 
-1. Run Commands:  
+1. Run Commands:
+
+```
+sudo apt install npm
 npm install  
 cp config/config_EXAMPLE.js config/config.js  
-cp config/configIpPort_EXAMPLE.js config/configIpPort.js  
+``` 
 
 2. Edit File "config/config.js"
   - "secret" should be updated to an safe kept value (used for JWT encryption)
@@ -24,20 +27,26 @@ cp config/configIpPort_EXAMPLE.js config/configIpPort.js
 
 ## Run Server
 
+```
 npm run start
+```
 
 ## Run Initialization endpoint
 
 Once you see "Connected to database" in the console:
 
+```
 ctrl + c  
 npm run init
+```
 
 This will initialize root account setup (using the account set in config/config.js > init.rootaccount). An email will be sent if the gmail api data was set correctly. After initialization the Root account will have access to endpoints for managing the site.
 
 ## Verify process is running
 
-ps -ef | grep node
+```
+ps aux | grep node
+```
 
 You should see the node server still running in the background
 
@@ -45,4 +54,6 @@ You should see the node server still running in the background
 
 Get the process ID from the 'ps' command and run the kill command
 
+```
 kill {ID}
+```
