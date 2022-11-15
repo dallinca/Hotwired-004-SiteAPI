@@ -25,5 +25,7 @@ module.exports = {
   },
   'database': {
     'address': 'mongodb://localhost:27017/hw'
-  }
+  },
+  'ipv4': ['127.0.0.1', '192.168.0.12'],
+  'port': 3000
 };
