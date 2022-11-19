@@ -14,9 +14,9 @@
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.2",
     "express": "^4.16.2",
-    "googleapis": "^92.0.0",
+    "googleapis": "^109.0.1",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.0.1",
+    "mongoose": "^6.7.2",
     "nodemailer": "^6.7.2",
     "winston": "^3.3.3"
   }
